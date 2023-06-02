@@ -1,8 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { User } from '../../user/entities/user.entity'
 
 @Schema({timestamps: true})
 export class Help extends Document{
+  @Prop()
+  subject: string;
+
   @Prop()
   message: string;
 
@@ -10,10 +14,10 @@ export class Help extends Document{
   date: Date;
 
   @Prop()
-  sender: object;
+  sender: User;
 
   @Prop()
-  receiver: object;
+  receiver: User;
 
   @Prop()
   systemState: number;

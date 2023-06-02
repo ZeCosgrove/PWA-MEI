@@ -16,6 +16,15 @@ export class User extends Document{
   role: number;
 
   @Prop()
+  nif: number;
+
+  @Prop()
+  mobile: number;
+
+  @Prop()
+  addresses: Array<object>;
+
+  @Prop()
   systemState: number;
 }
 
