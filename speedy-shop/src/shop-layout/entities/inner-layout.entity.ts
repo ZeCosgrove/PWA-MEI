@@ -1,8 +1,8 @@
 export class InnerLayout {
     identifier: number
-    upperLeft: Array<number>[]
-    upperRight: Array<number>[]
-    bottomLeft: Array<number>[]
-    bottonRigh: Array<number>[]
+    upperLeft: [number, number]
+    upperRight: [number, number]
+    bottomLeft: [number, number]
+    bottonRigh: [number, number]
     isObstacle: boolean
-}
+} 

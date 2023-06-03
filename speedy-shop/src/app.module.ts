@@ -11,6 +11,7 @@ import { ProductLocationModule } from './product-location/product-location.modul
 import { ShopLayoutModule } from './shop-layout/shop-layout.module';
 import { ShoppingCartModule } from './shopping-cart/shopping-cart.module';
 import { UserModule } from './user/user.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [MongooseModule.forRoot(`mongodb+srv://${process.env.User}:${process.env.Password}@cluster0.hhyizyw.mongodb.net/?retryWrites=true&w=majority`),
@@ -22,7 +23,8 @@ import { UserModule } from './user/user.module';
     ProductLocationModule,
     ShopLayoutModule,
     ShoppingCartModule,
-    UserModule],
+    UserModule,
+    CategoryModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -4,6 +4,6 @@ import { ShopLayoutSystemState } from '../enums/shop-layout-system-state.enum'
 export class ShopLayout {
     name: string
     layout: Layout
-    realWorldCoordinates: Array<number>[]
+    realWorldCoordinates: [number, number]
     systemState: ShopLayoutSystemState
 }
