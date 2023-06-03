@@ -1,13 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { User } from '../../user/entities/user.entity'
 
 @Schema({timestamps: true})
 export class ShoppingCart extends Document{
   @Prop()
-  user: object;
+  user: User;
 
   @Prop()
-  product: Array<object>;
+  product: Array<number>;
 
   @Prop()
   startDate: Date;

@@ -7,7 +7,7 @@ export class ShopLayout extends Document{
   name: string;
 
   @Prop()
-  layout: object;
+  layout: number;
 
   @Prop()
   systemState: number;
