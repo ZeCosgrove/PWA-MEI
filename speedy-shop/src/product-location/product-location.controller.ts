@@ -17,18 +17,23 @@ export class ProductLocationController {
     return this.productLocationService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productLocationService.findOne(+id);
+  @Get('product/:id')
+  findByProduct(@Param('id') id: string) {
+    return this.productLocationService.findByProduct(id);
+  }
+
+  @Get('shop/:id')
+  findByShop(@Param('id') id: string){
+    return this.productLocationService.findByShop(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProductLocationDto: UpdateProductLocationDto) {
-    return this.productLocationService.update(+id, updateProductLocationDto);
+    return this.productLocationService.update(id, updateProductLocationDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.productLocationService.remove(+id);
+    return this.productLocationService.remove(id);
   }
 }

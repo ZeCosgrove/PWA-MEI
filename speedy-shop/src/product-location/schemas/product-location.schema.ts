@@ -4,10 +4,10 @@ import { Document } from 'mongoose';
 @Schema({timestamps: true})
 export class ProductLocation extends Document{
   @Prop()
-  product: number;
+  product: string;
 
   @Prop()
-  shop: number;
+  shop: string;
 
   @Prop()
   location: number;
