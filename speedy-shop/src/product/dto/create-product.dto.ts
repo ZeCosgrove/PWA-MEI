@@ -24,7 +24,9 @@ export class CreateProductDto {
     @IsNumber()
     quantity: number
 
+    @IsNumber()
     category: number
 
+    @IsNumber()
     location: number
 }

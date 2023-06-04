@@ -25,7 +25,7 @@ import { CategoryModule } from './category/category.module';
     ShoppingCartModule,
     UserModule,
     CategoryModule,
-    MongooseModule.forRoot('mongodb://localhost:27017/speedyshop-teste')],
+    MongooseModule.forRoot(`mongodb+srv://a18809:a18809a18809@cluster0.8704wbn.mongodb.net/?retryWrites=true&w=majority`)],
   controllers: [AppController],
   providers: [AppService],
 })
