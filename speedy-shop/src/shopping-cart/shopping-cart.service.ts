@@ -84,6 +84,25 @@ export class ShoppingCartService {
   }
 
   /**
+   * This method returns the active shopping carts of a user
+   * @param userId the user identifier
+   * @returns only the active shopping carts
+   */
+  async findActiveByUser(userId: string) : Promise<ShoppingCart[]>{
+    const allShoppingCarts = await this.findByUser(userId);
+
+    const activeShoppingCarts = [];
+    for (let i = 0; i < allShoppingCarts.length; i++) {
+      const shoppingCart = allShoppingCarts[i];
+      if (shoppingCart.systemState == 1) {
+        activeShoppingCarts.push(shoppingCart);
+      }
+    }
+
+    return activeShoppingCarts;
+  }
+
+  /**
    * This method updates a shopping cart
    * @param id id of shopping cart to update
    * @param updateShoppingCartDto the new values of the shopping cart

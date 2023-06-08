@@ -32,13 +32,19 @@ export class ShoppingCartController {
     return this.shoppingCartService.findByUser(id);
   }
 
+  @Get('user-active/:id')
+  @HttpCode(200)
+  findActiveByUserId(@Param('id') id: string){
+    return this.shoppingCartService.findActiveByUser(id);
+  }
+
   @Patch(':id')
   @HttpCode(200)
   update(@Param('id') id: string, @Body() updateShoppingCartDto: UpdateShoppingCartDto) {
     return this.shoppingCartService.update(id, updateShoppingCartDto);
   }
 
-  @Patch(':id')
+  @Patch('system-state/:id')
   @HttpCode(200)
   updateSystemState(@Param('id') id: string, @Body() updateSystemStateDto: UpdateShoppingCartSystemStateDto){
     return this.shoppingCartService.updateSystemState(id, updateSystemStateDto)
