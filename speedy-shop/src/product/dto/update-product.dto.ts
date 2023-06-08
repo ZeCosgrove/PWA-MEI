@@ -4,8 +4,10 @@ import {
     IsNumber,
     IsString,
     IsArray,
+    IsEnum,
 
 } from 'class-validator';
+import { ProductSystemState } from '../enums/product-system-state.enum';
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {
 
@@ -27,4 +29,6 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
     @IsArray()
     location: [number, number]
     
+    @IsEnum(ProductSystemState)
+    systemState : ProductSystemState
 }

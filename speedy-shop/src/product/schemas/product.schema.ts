@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { ProductSystemState } from '../enums/product-system-state.enum';
 
 @Schema({timestamps: true})
 export class Product extends Document{
@@ -19,7 +20,7 @@ export class Product extends Document{
   category: number;
 
   @Prop()
-  systemState: number;
+  systemState: ProductSystemState;
 
   @Prop()
   location: [number, number];
