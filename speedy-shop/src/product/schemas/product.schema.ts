@@ -22,7 +22,7 @@ export class Product extends Document{
   systemState: number;
 
   @Prop()
-  location: number;
+  location: [number, number];
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

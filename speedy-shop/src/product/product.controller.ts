@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Query } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -27,11 +27,11 @@ export class ProductController {
     return this.productService.getProductsByCategory(category)
   }
 
-  @Get('location/:location')
+  @Get('location/')
   @HttpCode(200)
-  getProductsByLocation(@Param('location') location: number)
+  getProductsByLocation(@Query('x') x: number, @Query('y') y: number)
   {
-    return this.productService.getProductsByLocation(location)
+    return this.productService.getProductsByLocation(x, y)
   }
 
   @Get('id/:id')

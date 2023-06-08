@@ -57,7 +57,8 @@ export class ProductService {
    * @param location the location to find the products
    * @returns an array of products or null if none were found
    */
-  async getProductsByLocation(location: number): Promise<Product[] | null>{
+  async getProductsByLocation(x: number, y: number): Promise<Product[] | null>{
+    const location = [x, y]
     var productsByLocation = await this.productModel.find({location: {$eq: location}}).exec();
     return productsByLocation;
   }

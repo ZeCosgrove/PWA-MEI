@@ -4,6 +4,7 @@ import {
     Length,
     IsNumber,
     IsString,
+    IsArray,
 
 } from 'class-validator';
 export class CreateProductDto {
@@ -27,6 +28,6 @@ export class CreateProductDto {
     @IsNumber()
     category: number
 
-    @IsNumber()
-    location: number
+    @IsArray()
+    location: [number, number]
 }

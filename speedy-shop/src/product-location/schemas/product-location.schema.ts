@@ -10,7 +10,7 @@ export class ProductLocation extends Document{
   shop: string;
 
   @Prop()
-  location: number;
+  location: [number, number];
 }
 
 export const ProductLocationSchema = SchemaFactory.createForClass(ProductLocation);

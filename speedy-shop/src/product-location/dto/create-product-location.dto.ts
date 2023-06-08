@@ -1,10 +1,6 @@
 import {  
-    IsPositive,
-    Max,
-    Min,
-    Length,
-    IsNumber,
     IsString,
+    IsArray,
 
 } from 'class-validator';
 
@@ -15,7 +11,6 @@ export class CreateProductLocationDto {
     @IsString()
     shop: string;
 
-    @IsNumber()
-    @Min(0)
-    location: number;
+    @IsArray()
+    location: [number, number];
 }

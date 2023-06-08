@@ -6,6 +6,6 @@ export class Product {
     price: string
     quantity: number
     category: number
-    location: number
+    location: [number, number]
     systemState: ProductSystemState
 }
