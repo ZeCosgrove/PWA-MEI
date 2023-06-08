@@ -11,6 +11,7 @@ import { ShopLayoutModule } from './shop-layout/shop-layout.module';
 import { ShoppingCartModule } from './shopping-cart/shopping-cart.module';
 import { UserModule } from './user/user.module';
 import { CategoryModule } from './category/category.module';
+import { ConfigModule } from '@nestjs/config';
 
 //`mongodb+srv://${process.env.User}:${process.env.Password}@cluster0.hhyizyw.mongodb.net/?retryWrites=true&w=majority`
 
@@ -25,7 +26,8 @@ import { CategoryModule } from './category/category.module';
     ShoppingCartModule,
     UserModule,
     CategoryModule,
-    MongooseModule.forRoot(`mongodb+srv://a18809:a18809a18809@cluster0.8704wbn.mongodb.net/?retryWrites=true&w=majority`)],
+    ConfigModule.forRoot({envFilePath: '.env'}),
+    MongooseModule.forRoot(`mongodb+srv://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@cluster0.8704wbn.mongodb.net/?retryWrites=true&w=majority`)],
   controllers: [AppController],
   providers: [AppService],
 })
