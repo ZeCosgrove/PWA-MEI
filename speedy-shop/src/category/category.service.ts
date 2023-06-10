@@ -2,25 +2,56 @@ import { Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+
+import { Category, CategorySchema } from './schemas/category.schema';
+import { GetCategoryOutput } from './entities/get-category-output.entity'
+
 @Injectable()
 export class CategoryService {
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+
+  constructor(@InjectModel(Category.name) private categoryModel: Model<Category>) {}
+
+  async getCategories(): Promise<GetCategoryOutput[]> {
+    const categories: Category[] = await this.categoryModel.find().exec()
+
+    var output: GetCategoryOutput[] = new Array
+
+    categories.forEach(category => {
+      const singleCategory = new GetCategoryOutput(category._id, category.name)
+      output.push(singleCategory)
+    });
+    
+    return output
   }
 
-  findAll() {
-    return `This action returns all category`;
+  async getCategoryById(id: string): Promise<GetCategoryOutput> {
+    const category: GetCategoryOutput = await this.categoryModel.findById(id).exec()
+
+    const output = new GetCategoryOutput(category._id, category.name)
+
+    return output
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  async createCategory(input: CreateCategoryDto): Promise<GetCategoryOutput> {
+    const createdCategory: Category = new this.categoryModel(input);
+    const category: Category = await createdCategory.save();
+
+    const output = new GetCategoryOutput(category._id, category.name)
+
+    return output
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async updateCategory(id: string, input: UpdateCategoryDto) {
+    await this.categoryModel.updateOne({ _id: id}, input).exec()
+
+    return this.getCategoryById(id)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  async removeCategory(id: string) {
+
+    //validate if it is being used 
+    return await this.categoryModel.deleteOne({ _id: id}).exec()
   }
 }

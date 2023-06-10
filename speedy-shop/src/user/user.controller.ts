@@ -2,34 +2,78 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { UserService } from './user.service';
 import { CreateUserInputDto } from './dto/create-user-input.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './schemas/user.schema';
+import { UpdateUserSystemStateDto } from './dto/update-user-system-state.dto';
+import { UpdateUserRoleDto } from './dto/update-user-role.dto';
+import { LoginUserInputDto } from './dto/login-user-input.dto';
+import { RecoverPasswordInputDto } from './dto/recover-password-input.dto';
+import { ChangePasswordInputDto } from './dto/change-password-input.dto';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserInputDto) {
-    return this.userService.create(createUserDto);
+  @Get()
+  getUsers() {
+    return this.userService.getUsers();
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.userService.findAll();
-  // }
-
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<User> {
-    return this.userService.findOne(id);
+  getUserById(@Param('id') id: string) {
+    return this.userService.getUserById(id);
+  }
+
+  @Get('systemState/deleted')
+  getDeletedUsers() {
+    return this.userService.getDeletedUsers();
+  }
+
+  @Get('role/:id')
+  getUsersByRole(@Param('id') role: number) {
+    return this.userService.getUsersByRole(role);
+  }
+
+  @Get('details/:id')
+  getUserDetails(@Param('id') id: string) {
+    return this.userService.getUserDetails(id);
+  }
+
+  @Post('register')
+  registerUser(@Body() createUserDto: CreateUserInputDto) {
+    return this.userService.registerUser(createUserDto);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(id, updateUserDto);
+  updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.updateUser(id, updateUserDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(id);
+  @Patch('systemState/update/:id')
+  updateUserSystemState(@Param('id') id: string, @Body() updateUserDto: UpdateUserSystemStateDto) {
+    return this.userService.updateUserSystemState(id, updateUserDto);
+  }
+
+  @Patch('role/update/:id')
+  updateUserRole(@Param('id') id: string, @Body() updateUserDto: UpdateUserRoleDto) {
+    return this.userService.updateUserRole(id, updateUserDto);
+  }
+
+  @Get('delete/:id')
+  deleteUser(@Param('id') id: string) {
+    return this.userService.deleteUser(id);
+  }
+
+  @Post('login')
+  loginUser(@Body() createUserDto: LoginUserInputDto) {
+    return this.userService.loginUser(createUserDto);
+  }
+
+  @Post('recover-password')
+  recoverPassword(@Body() createUserDto: RecoverPasswordInputDto) {
+    return this.userService.recoverPassword(createUserDto);
+  }
+
+  @Post('change-password')
+  changePassword(@Body() createUserDto: ChangePasswordInputDto) {
+    return this.userService.changePassword(createUserDto);
   }
 }

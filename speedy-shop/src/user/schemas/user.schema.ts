@@ -1,5 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Address } from 'src/address/entities/address.entity';
+import { UserSystemState } from '../enums/user-system-state.enum';
+import { UserRole } from '../enums/user-role.enum';
 
 @Schema({timestamps: true})
 export class User extends Document{
@@ -13,7 +16,7 @@ export class User extends Document{
   password: string;
 
   @Prop()
-  role: number;
+  role: UserRole;
 
   @Prop()
   nif: number;
@@ -22,10 +25,10 @@ export class User extends Document{
   mobile: number;
 
   @Prop()
-  addresses: Array<object>;
+  address: Address;
 
   @Prop()
-  systemState: number;
+  systemState: UserSystemState;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';;
 import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule } from '@nestjs/config';
 import { AddressModule } from './address/address.module';
 import { CartProductModule } from './cart-product/cart-product.module';
 import { HelpModule } from './help/help.module';
@@ -14,8 +13,7 @@ import { UserModule } from './user/user.module';
 import { CategoryModule } from './category/category.module';
 
 @Module({
-  imports: [MongooseModule.forRoot(`mongodb+srv://${process.env.User}:${process.env.Password}@cluster0.hhyizyw.mongodb.net/?retryWrites=true&w=majority`),
-    ConfigModule.forRoot(),
+  imports: [MongooseModule.forRoot(`mongodb+srv://a18809:a18809a18809@cluster0.8704wbn.mongodb.net/?retryWrites=true&w=majority`),
     AddressModule,
     CartProductModule,
     HelpModule,
