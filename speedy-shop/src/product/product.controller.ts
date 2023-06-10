@@ -3,6 +3,7 @@ import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { UpdateProductQuantityDto } from "./dto/update-product-quantity.dto";
+import { UpdateProductSystemStateDto } from './dto/update-product-systemstate.dto';
 
 @Controller('product')
 export class ProductController {
@@ -22,16 +23,16 @@ export class ProductController {
 
   @Get('category/:category')
   @HttpCode(200)
-  getProductsByCategory(@Param('category') category: number)
+  getProductsByCategory(@Param('category') category: string)
   {
     return this.productService.getProductsByCategory(category)
   }
 
-  @Get('location/')
+  @Get('location/:location')
   @HttpCode(200)
-  getProductsByLocation(@Query('x') x: number, @Query('y') y: number)
+  getProductsByLocation(@Param('location') location: string)
   {
-    return this.productService.getProductsByLocation(x, y)
+    return this.productService.getProductsByLocation(+location)
   }
 
   @Get('id/:id')
@@ -52,9 +53,10 @@ export class ProductController {
     return this.productService.changeProductQuantity(id, updateProductQuantityDto);
   }
 
-  @Delete(':id')
-  @HttpCode(204)
-  remove(@Param('id') id: string) {
-    return this.productService.remove(id);
+  @Patch('changeSystemState/:id')
+  @HttpCode(201)
+  updateSystemState(@Param('id') id: string, @Body() updateProductSystemState: UpdateProductSystemStateDto) {
+    return this.productService.changeProductSystemState(id, updateProductSystemState);
   }
+  
 }

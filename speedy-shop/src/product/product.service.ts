@@ -6,13 +6,17 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { UpdateProductQuantityDto } from './dto/update-product-quantity.dto';
 import { Product } from "./schemas/product.schema";
 import { ProductSystemState } from './enums/product-system-state.enum';
+import { UpdateProductSystemStateDto } from './dto/update-product-systemstate.dto';
+import { Category } from 'src/category/schemas/category.schema';
+import { ProductLocation } from 'src/product-location/schemas/product-location.schema';
 
 @Injectable()
 export class ProductService {
   /**
    * Constructor to initialize the Injectable Model
    */
-  constructor(@InjectModel(Product.name) private productModel: Model<Product>) {}
+  constructor(@InjectModel(Product.name) private productModel: Model<Product>,
+  @InjectModel(Category.name) private categoryModel: Model<Category>) {}
 
   /**
    * This method creates a new product
@@ -20,8 +24,23 @@ export class ProductService {
    * @returns returns the result of the attempt to save this new product
    */
   async createProduct(createProductDto: CreateProductDto) : Promise<Product> {
-    const createdProduct = new this.productModel(createProductDto);
-    createdProduct.systemState = ProductSystemState.Active;
+
+    // check if the category exists
+    const categoryFinded = await this.categoryModel.findById(createProductDto.category).exec();
+    if (!categoryFinded) {
+      return null;
+    }
+
+    const createdProduct = new this.productModel({
+      name: createProductDto.name,
+      description: createProductDto.description,
+      price: createProductDto.price,
+      quantity: createProductDto.quantity,
+      category: categoryFinded,
+      location: createProductDto.location,
+      systemState: createProductDto.systemState
+    });
+
     return await createdProduct.save();
   }
 
@@ -47,8 +66,15 @@ export class ProductService {
    * @param category the filter category of products
    * @returns an array of products or null if none were found
    */
-  async  getProductsByCategory(category: number): Promise<Product[] | null>{
-    var productsByCategory = await this.productModel.find({category: {$eq: category}}).exec();
+  async  getProductsByCategory(category: string): Promise<Product[] | null>{
+
+    // check if the category exists
+    const categoryFinded = await this.categoryModel.findById(category).exec();
+    if (!categoryFinded) {
+      return null;
+    }
+
+    var productsByCategory = await this.productModel.find({"category._id": category}).exec();
     return productsByCategory;
   }
 
@@ -57,10 +83,13 @@ export class ProductService {
    * @param location the location to find the products
    * @returns an array of products or null if none were found
    */
-  async getProductsByLocation(x: number, y: number): Promise<Product[] | null>{
-    const location = [x, y]
-    var productsByLocation = await this.productModel.find({location: {$eq: location}}).exec();
-    return productsByLocation;
+  async getProductsByLocation(location: number): Promise<Product[] | null>{
+
+    // get the products
+    const products = await this.productModel.find({location: location}).exec();
+
+    // return the products
+    return products;
   }
 
   /**
@@ -70,8 +99,26 @@ export class ProductService {
    * @returns Returns the Status of the Update Action
    */
   async changeProduct(id: string, updateProductDto: UpdateProductDto) {
-    const updatedProduct = await this.productModel.findByIdAndUpdate(id, updateProductDto);
-    return updatedProduct;
+
+    // check if the category exists
+    const categoryFinded = await this.categoryModel.findById(updateProductDto.category).exec();
+    if (!categoryFinded) {
+      return null;
+    }
+
+    // update the product
+    const updatedProduct = (await this.productModel.findByIdAndUpdate(id, {
+      name: updateProductDto.name,
+      description: updateProductDto.description,
+      price: updateProductDto.price,
+      quantity: updateProductDto.quantity,
+      category: categoryFinded,
+      location: updateProductDto.location,
+      systemState: updateProductDto.systemState
+    })).save();
+
+    // return the product updated
+    return await updatedProduct;
   }
 
   /**
@@ -80,18 +127,24 @@ export class ProductService {
    * @param quantity New Quantity of Product
    * @returns the product updated
    */
-  async changeProductQuantity(id: string, updateProductQuanntityDto: UpdateProductQuantityDto){
+  async changeProductQuantity(id: string, updateProductQuantityDto: UpdateProductQuantityDto){
     const productToUpdate = await this.productModel.findById(id);
-    productToUpdate.quantity = updateProductQuanntityDto.quantity;
+    productToUpdate.quantity = updateProductQuantityDto.quantity;
     return productToUpdate.save();
   }
 
   /**
-   * This Method Removes a product in the database
-   * @param id Product Id to Remove
-   * @returns Returns the status of the Remove Action
+   * This method updates the product system state
+   * @param id Product Identifier to Update
+   * @param updateProductSystemStateDto New System State
+   * @returns the product updated
    */
-  async remove(id: string) : Promise<void>{
-    return await this.productModel.findByIdAndRemove(id);
+  async changeProductSystemState(id: string, updateProductSystemStateDto: UpdateProductSystemStateDto){
+    const productToUpdate = await this.productModel.findById(id);
+    productToUpdate.systemState = updateProductSystemStateDto.systemState;
+
+    return productToUpdate.save();
   }
+
+
 }

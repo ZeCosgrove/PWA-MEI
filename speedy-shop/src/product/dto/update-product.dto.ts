@@ -3,11 +3,11 @@ import { CreateProductDto } from './create-product.dto';
 import {  
     IsNumber,
     IsString,
-    IsArray,
     IsEnum,
 
 } from 'class-validator';
 import { ProductSystemState } from '../enums/product-system-state.enum';
+import { ProductLocation } from 'src/product-location/schemas/product-location.schema';
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {
 
@@ -23,11 +23,10 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
     @IsNumber()
     quantity: number
 
-    @IsNumber()
-    category: number
+    @IsString()
+    category: string
 
-    @IsArray()
-    location: [number, number]
+    location: ProductLocation
     
     @IsEnum(ProductSystemState)
     systemState : ProductSystemState

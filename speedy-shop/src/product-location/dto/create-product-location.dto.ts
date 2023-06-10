@@ -1,6 +1,6 @@
 import {  
     IsString,
-    IsArray,
+    IsNumber,
 
 } from 'class-validator';
 
@@ -11,6 +11,6 @@ export class CreateProductLocationDto {
     @IsString()
     shop: string;
 
-    @IsArray()
-    location: [number, number];
+    @IsNumber()
+    location: number;
 }

@@ -3,7 +3,7 @@ import { CreateProductLocationDto } from './create-product-location.dto';
 
 import {  
     IsString,
-    IsArray,
+    IsNumber,
 
 } from 'class-validator';
 
@@ -15,6 +15,6 @@ export class UpdateProductLocationDto extends PartialType(CreateProductLocationD
     @IsString()
     shop: string;
 
-    @IsArray()
-    location: [number, number];
+    @IsNumber()
+    location: number;
 }

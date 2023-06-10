@@ -1,14 +1,13 @@
 import {  
     IsPositive,
-    Max,
     Length,
     IsNumber,
     IsString,
-    IsArray,
     IsEnum,
 
 } from 'class-validator';
 import { ProductSystemState } from '../enums/product-system-state.enum';
+import { ProductLocation } from 'src/product-location/schemas/product-location.schema';
 export class CreateProductDto {
 
     @Length(0, 20)
@@ -27,11 +26,10 @@ export class CreateProductDto {
     @IsNumber()
     quantity: number
 
-    @IsNumber()
-    category: number
+    @IsString()
+    category: string
 
-    @IsArray()
-    location: [number, number]
+    location: ProductLocation
 
     @IsEnum(ProductSystemState)
     systemState : ProductSystemState
