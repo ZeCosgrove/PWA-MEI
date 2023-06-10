@@ -22,7 +22,7 @@ export class ShoppingCartService {
    * @param createShoppingCartDto the shopping cart received
    * @returns a new shopping cart 
    */
-  async create(createShoppingCartDto: CreateShoppingCartDto): Promise<ShoppingCart> {
+  async createShoppingCart(createShoppingCartDto: CreateShoppingCartDto): Promise<ShoppingCart> {
     const { user, products, startDate, endDate, systemState } = createShoppingCartDto;
 
     const userFounded = await this.userModel.findById(user);
@@ -55,7 +55,7 @@ export class ShoppingCartService {
    * This method returns all the shopping carts in the database
    * @returns All the shopping carts in the database
    */
-  async findAll() : Promise<ShoppingCart[]>{
+  async getAllShoppingCarts() : Promise<ShoppingCart[]>{
     return await this.shoppingCartModel.find();
   }
 
@@ -64,7 +64,7 @@ export class ShoppingCartService {
    * @param id the id of the shopping cart
    * @returns one shopping cart if exists
    */
-  async findOne(id: string) :  Promise<ShoppingCart>{
+  async getShoppingCartById(id: string) :  Promise<ShoppingCart>{
     return await this.shoppingCartModel.findById(id);
   }
 
@@ -73,7 +73,7 @@ export class ShoppingCartService {
    * @param userId The user id to filter the shopping carts
    * @returns the shopping carts of the user received
    */
-  async findByUser(userId: string): Promise<ShoppingCart[]> {
+  async getShoppingCartByUser(userId: string): Promise<ShoppingCart[]> {
     const userFound = await this.userModel.findById(userId).exec();
     if (!userFound) {
       throw new Error('404 Not Found: User not found');
@@ -88,8 +88,8 @@ export class ShoppingCartService {
    * @param userId the user identifier
    * @returns only the active shopping carts
    */
-  async findActiveByUser(userId: string) : Promise<ShoppingCart[]>{
-    const allShoppingCarts = await this.findByUser(userId);
+  async getActiveShoppingCartByUser(userId: string) : Promise<ShoppingCart[]>{
+    const allShoppingCarts = await this.getShoppingCartByUser(userId);
 
     const activeShoppingCarts = [];
     for (let i = 0; i < allShoppingCarts.length; i++) {
@@ -108,7 +108,7 @@ export class ShoppingCartService {
    * @param updateShoppingCartDto the new values of the shopping cart
    * @returns the shopping cart update
    */
-  async update(id: string, updateShoppingCartDto: UpdateShoppingCartDto) : Promise<ShoppingCart> {
+  async updateShoppingCart(id: string, updateShoppingCartDto: UpdateShoppingCartDto) : Promise<ShoppingCart> {
 
     const { user, products, startDate, endDate, systemState } = updateShoppingCartDto;
 
@@ -144,17 +144,9 @@ export class ShoppingCartService {
    * @param shoppingCartId the id of shopping cart to update
    * @param systemState the new system state
    */
-  async updateSystemState(shoppingCartId: string, systemStateDto: UpdateShoppingCartSystemStateDto){
+  async updateShoppingCartSystemState(shoppingCartId: string, systemStateDto: UpdateShoppingCartSystemStateDto){
     const shoppingCartUpdated = (await this.shoppingCartModel.findByIdAndUpdate(shoppingCartId, systemStateDto)).save();
     return await shoppingCartUpdated;
   }
 
-  /**
-   * This method removes an shopping cart from the database
-   * @param id shopping cart identifier
-   * @returns the result of the remove action
-   */
-  async remove(id: string) {
-    return await this.shoppingCartModel.findByIdAndDelete(id);
-  }
 }

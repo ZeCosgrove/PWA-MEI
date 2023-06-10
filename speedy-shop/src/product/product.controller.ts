@@ -37,25 +37,25 @@ export class ProductController {
 
   @Get('id/:id')
   @HttpCode(200)
-  findOne(@Param('id') id: string) {
+  getProductById(@Param('id') id: string) {
     return this.productService.getProductsById(id);
   }
 
   @Patch(':id')
   @HttpCode(201)
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+  changeProduct(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productService.changeProduct(id, updateProductDto);
   }
 
   @Patch('changeQuantity/:id')
   @HttpCode(201)
-  updateQuantity(@Param('id') id: string, @Body() updateProductQuantityDto: UpdateProductQuantityDto) {
+  updateProductQuantity(@Param('id') id: string, @Body() updateProductQuantityDto: UpdateProductQuantityDto) {
     return this.productService.changeProductQuantity(id, updateProductQuantityDto);
   }
 
   @Patch('changeSystemState/:id')
   @HttpCode(201)
-  updateSystemState(@Param('id') id: string, @Body() updateProductSystemState: UpdateProductSystemStateDto) {
+  updateProductSystemState(@Param('id') id: string, @Body() updateProductSystemState: UpdateProductSystemStateDto) {
     return this.productService.changeProductSystemState(id, updateProductSystemState);
   }
   

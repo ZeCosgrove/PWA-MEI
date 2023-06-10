@@ -8,32 +8,32 @@ export class ProductLocationController {
   constructor(private readonly productLocationService: ProductLocationService) {}
 
   @Post()
-  create(@Body() createProductLocationDto: CreateProductLocationDto) {
-    return this.productLocationService.create(createProductLocationDto);
+  createProductLocation(@Body() createProductLocationDto: CreateProductLocationDto) {
+    return this.productLocationService.createProductLocation(createProductLocationDto);
   }
 
   @Get()
-  findAll() {
-    return this.productLocationService.findAll();
+  getProductLocations() {
+    return this.productLocationService.getProductLocations();
   }
 
   @Get('product/:id')
-  findByProduct(@Param('id') id: string) {
+  getProductLocationByProduct(@Param('id') id: string) {
     return this.productLocationService.findByProduct(id);
   }
 
   @Get('shop/:id')
-  findByShop(@Param('id') id: string){
+  getProductLocationByShop(@Param('id') id: string){
     return this.productLocationService.findByShop(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductLocationDto: UpdateProductLocationDto) {
-    return this.productLocationService.update(id, updateProductLocationDto);
+  updateProductLocation(@Param('id') id: string, @Body() updateProductLocationDto: UpdateProductLocationDto) {
+    return this.productLocationService.updateProductLocation(id, updateProductLocationDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productLocationService.remove(id);
+  removeProductLocation(@Param('id') id: string) {
+    return this.productLocationService.removeProductLocation(id);
   }
 }

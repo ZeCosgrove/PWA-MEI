@@ -10,49 +10,44 @@ export class ShoppingCartController {
 
   @Post()
   @HttpCode(200)
-  create(@Body() createShoppingCartDto: CreateShoppingCartDto) {
-    return this.shoppingCartService.create(createShoppingCartDto);
+  createShoppingCart(@Body() createShoppingCartDto: CreateShoppingCartDto) {
+    return this.shoppingCartService.createShoppingCart(createShoppingCartDto);
   }
 
   @Get()
   @HttpCode(200)
-  findAll() {
-    return this.shoppingCartService.findAll();
+  getAllShoppingCart() {
+    return this.shoppingCartService.getAllShoppingCarts();
   }
 
   @Get(':id')
   @HttpCode(200)
-  findOne(@Param('id') id: string) {
-    return this.shoppingCartService.findOne(id);
+  getShoppingCartById(@Param('id') id: string) {
+    return this.shoppingCartService.getShoppingCartById(id);
   }
 
   @Get('user/:id')
   @HttpCode(200)
-  findByUserId(@Param('id') id: string){
-    return this.shoppingCartService.findByUser(id);
+  getShoppingCartByUser(@Param('id') id: string){
+    return this.shoppingCartService.getShoppingCartByUser(id);
   }
 
   @Get('user-active/:id')
   @HttpCode(200)
-  findActiveByUserId(@Param('id') id: string){
-    return this.shoppingCartService.findActiveByUser(id);
+  getActiveShoppingCartByUser(@Param('id') id: string){
+    return this.shoppingCartService.getActiveShoppingCartByUser(id);
   }
 
   @Patch(':id')
   @HttpCode(200)
-  update(@Param('id') id: string, @Body() updateShoppingCartDto: UpdateShoppingCartDto) {
-    return this.shoppingCartService.update(id, updateShoppingCartDto);
+  updateShoppingCart(@Param('id') id: string, @Body() updateShoppingCartDto: UpdateShoppingCartDto) {
+    return this.shoppingCartService.updateShoppingCart(id, updateShoppingCartDto);
   }
 
   @Patch('system-state/:id')
   @HttpCode(200)
-  updateSystemState(@Param('id') id: string, @Body() updateSystemStateDto: UpdateShoppingCartSystemStateDto){
-    return this.shoppingCartService.updateSystemState(id, updateSystemStateDto)
+  updateShoppingCartSystemState(@Param('id') id: string, @Body() updateSystemStateDto: UpdateShoppingCartSystemStateDto){
+    return this.shoppingCartService.updateShoppingCartSystemState(id, updateSystemStateDto)
   }
 
-  @Delete(':id')
-  @HttpCode(204)
-  remove(@Param('id') id: string) {
-    return this.shoppingCartService.remove(id);
-  }
 }

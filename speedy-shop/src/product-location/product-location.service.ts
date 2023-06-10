@@ -24,7 +24,7 @@ export class ProductLocationService {
    * @param createProductLocationDto the verified body to create a new product location
    * @returns null if the product doesn't exist or the new product location if the product exists
    */
-  async create(createProductLocationDto: CreateProductLocationDto): Promise<ProductLocation> {
+  async createProductLocation(createProductLocationDto: CreateProductLocationDto): Promise<ProductLocation> {
 
     // Check if the product exists
     const findedProduct = await this.productModel.findById(createProductLocationDto.product);
@@ -57,7 +57,7 @@ export class ProductLocationService {
    * This methods finds all the product locations
    * @returns All the Products Locations in the database
    */
-  async findAll(): Promise<ProductLocation[]> {
+  async getProductLocations(): Promise<ProductLocation[]> {
     return await this.productLocationModel.find();
   }
 
@@ -103,7 +103,7 @@ export class ProductLocationService {
    * @param updateProductLocationDto The Values to Update the Product Location
    * @returns The Product Location Updated
    */
-  async update(id: string, updateProductLocationDto: UpdateProductLocationDto): Promise<ProductLocation> {
+  async updateProductLocation(id: string, updateProductLocationDto: UpdateProductLocationDto): Promise<ProductLocation> {
 
     // Check if the product exists
     const findedProduct = await this.productModel.findById(updateProductLocationDto.product);
@@ -135,7 +135,7 @@ export class ProductLocationService {
    * @param id Product Location Id to Remove
    * @returns 
    */
-  async remove(id: string) {
+  async removeProductLocation(id: string) {
     return await this.productLocationModel.findByIdAndRemove(id);
   }
 }
