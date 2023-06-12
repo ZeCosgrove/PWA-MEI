@@ -1,6 +1,17 @@
+import {  
+    IsArray, IsObject, IsString
+} from 'class-validator';
+
+import { Layout } from '../entities/layout.entity';
+
 export class CreateShopLayoutDto {
+
+    @IsString()
     name: string
-    height: number
-    width: number
+
+    @IsObject()
+    layout: Layout
+
+    @IsArray()
     realWorldCoordinates: [number, number]
 }

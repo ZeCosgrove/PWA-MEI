@@ -16,6 +16,7 @@ import { UpdateUserRoleDto } from './dto/update-user-role.dto';
 import { LoginUserInputDto } from './dto/login-user-input.dto';
 import { RecoverPasswordInputDto } from './dto/recover-password-input.dto';
 import { ChangePasswordInputDto } from './dto/change-password-input.dto';
+import { ForbiddenException } from 'src/exception/exception-handler';
 
 
 @Injectable()
@@ -38,7 +39,7 @@ export class UserService {
     return output
   }
 
-  async getUserById(id: string): Promise<GetUserOutput> {
+  async getUserById(id: string) {
     const user: User = await this.userModel.findById(id).exec()
 
     const output = new CreateUserOutput(user._id, user.name, user.email)
@@ -82,7 +83,7 @@ export class UserService {
     return output
   }
 
-  async registerUser(input: CreateUserInputDto): Promise<GetUserOutput> {
+  async registerUser(input: CreateUserInputDto) {
 
     const existingUser = await this.userModel.find({ email: input.email }).exec()
 
@@ -99,7 +100,7 @@ export class UserService {
     }
 
     //User exists
-    return null
+    throw new ForbiddenException("User already exists!");
   }
 
   async updateUser(id: string, input: UpdateUserDto) {
@@ -139,7 +140,7 @@ export class UserService {
     }
 
     //User and password dont match
-    return null
+    throw new ForbiddenException("Email and password don't match!");
   }
 
   async recoverPassword(input: RecoverPasswordInputDto): Promise<string> {
@@ -155,8 +156,8 @@ export class UserService {
       return user.password
     }
 
-    //User and password dont match
-    return null
+    //Email not found
+    throw new ForbiddenException("Email not found!");
   }
 
   async changePassword(input: ChangePasswordInputDto): Promise<GetUserOutput> {
@@ -171,6 +172,6 @@ export class UserService {
     }
 
     //User and password dont match
-    return null
+    throw new ForbiddenException("Email and password don't match!");
   }
 }

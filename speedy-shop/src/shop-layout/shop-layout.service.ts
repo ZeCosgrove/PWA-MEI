@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateShopLayoutDto } from './dto/create-shop-layout.dto';
 import { UpdateShopLayoutDto } from './dto/update-shop-layout.dto';
 
 import { InjectModel } from '@nestjs/mongoose';
@@ -9,10 +8,8 @@ import { ShopLayout } from './schemas/shopping-layout.schema'
 
 import { GetShopLayoutOutput } from './entities/get-shop-output.entity'
 import { ShopLayoutSystemState } from './enums/shop-layout-system-state.enum';
-import { Layout } from './entities/layout.entity';
 import { InnerLayout } from './entities/inner-layout.entity';
 import { UpdateShopLayoutSystemStateDto } from './dto/update-shop-layout-system-state.dto';
-import { UpdateShopInnerLayoutDto } from './dto/update-shop-inner-layout.dto';
 import { CoordinatesInputDto } from './dto/coordinates-input.dto';
 
 @Injectable()

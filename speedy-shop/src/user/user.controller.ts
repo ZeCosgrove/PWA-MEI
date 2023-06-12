@@ -67,7 +67,7 @@ export class UserController {
     return this.userService.loginUser(createUserDto);
   }
 
-  @Post('recover-password')
+  @Post('password-recovery')
   recoverPassword(@Body() createUserDto: RecoverPasswordInputDto) {
     return this.userService.recoverPassword(createUserDto);
   }
