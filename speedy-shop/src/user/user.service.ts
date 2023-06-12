@@ -8,7 +8,7 @@ import { Model } from 'mongoose';
 import { User } from './schemas/user.schema'
 
 import { Controller, Get, Post, Res, HttpStatus } from '@nestjs/common';
-import { Response } from 'express';
+
 
 
 @Injectable()

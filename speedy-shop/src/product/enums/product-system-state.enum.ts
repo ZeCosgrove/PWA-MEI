@@ -1,5 +1,5 @@
 export enum ProductSystemState {
-    Created,
-    Active,
-    Terminated
+    Created = 0,
+    Active = 1,
+    Terminated = 2
 }
