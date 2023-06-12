@@ -5,5 +5,5 @@ export class Layout {
     upperRight: [number, number]
     bottomLeft: [number, number]
     bottonRigh: [number, number]
-    innerLayout: Array<InnerLayout>[]
+    innerLayout: InnerLayout[]
 }

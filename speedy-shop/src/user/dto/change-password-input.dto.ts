@@ -1,13 +1,13 @@
 import { IsEmail, IsString } from "class-validator"
 
-export class CreateUserInputDto {
-
-    @IsString()
-    name: string
+export class ChangePasswordInputDto {
 
     @IsEmail()
     email: string
 
     @IsString()
-    password: string
+    oldPassword: string
+
+    @IsString()
+    newPassword: string
 }
