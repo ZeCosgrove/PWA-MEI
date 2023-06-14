@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { JwtService } from '@nestjs/jwt';
 
 import { User } from './schemas/user.schema'
 import { CreateUserOutput } from './entities/create-user-output.entity'
@@ -22,7 +23,7 @@ import { ForbiddenException } from 'src/exception/exception-handler';
 @Injectable()
 export class UserService {
 
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<User>, private jwtService: JwtService) {}
 
   async getUsers(): Promise<GetUserOutput[]> {
 
@@ -131,12 +132,22 @@ export class UserService {
     return this.getUserById(id)
   }
 
-  async loginUser(input: LoginUserInputDto): Promise<GetUserOutput> {
+  async loginUser(input: LoginUserInputDto) {
 
     const user = await this.userModel.findOne({ email: input.email, password: input.password }).exec()
 
     if (user !== null){
-      return this.getUserById(user._id)
+
+      const payload = { sub: user._id, username: user.name, role: user.role };
+      let token = {
+        //access_token: await this.jwtService.signAsync(payload),
+        access_token: await this.jwtService.signAsync(payload)
+      };
+
+      //return this.getUserById(user._id)
+      const output = new CreateUserOutput(user._id, user.name, user.email, token.access_token)
+
+      return output
     }
 
     //User and password dont match
