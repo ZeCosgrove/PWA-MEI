@@ -7,27 +7,31 @@ import {
 
 } from 'class-validator';
 import { ProductSystemState } from '../enums/product-system-state.enum';
-import { ProductLocation } from 'src/product-location/schemas/product-location.schema';
+
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {
 
     @IsString()
-    name: string
+    name?: string
 
     @IsString()
-    description: string
+    description?: string
 
     @IsNumber()
-    price: number
+    price?: number
 
     @IsNumber()
-    quantity: number
+    quantity?: number
 
     @IsString()
-    category: string
+    category?: string
 
-    location: ProductLocation
-    
+    @IsNumber()
+    location?: number
+
+    @IsString()
+    shop?: string;
+
     @IsEnum(ProductSystemState)
-    systemState : ProductSystemState
+    systemState?: ProductSystemState
 }
