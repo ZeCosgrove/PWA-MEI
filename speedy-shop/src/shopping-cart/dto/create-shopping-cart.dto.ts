@@ -8,13 +8,13 @@ export class CreateShoppingCartDto {
     user: String
 
     @IsArray()
-    products: Array<String>
+    products?: Array<String>
 
     @IsString()
     startDate: Date
 
     @IsString()
-    endDate: Date
+    endDate?: Date
 
     @IsEnum(ShoppingCartSystemState)
     systemState : ShoppingCartSystemState

@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import {ShoppingCart, ShoppingCartSchema} from './schemas/shopping-cart.schema';
 import { Product, ProductSchema } from 'src/product/schemas/product.schema';
 import { User, UserSchema } from 'src/user/schemas/user.schema';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   controllers: [ShoppingCartController],
@@ -16,6 +17,11 @@ import { User, UserSchema } from 'src/user/schemas/user.schema';
       { name: Product.name, schema: ProductSchema },
       { name: User.name, schema: UserSchema }
     ]),
-  ],
+    JwtModule.register({
+      global: true,
+      secret: "asasd", //process.env.SECRET,
+      signOptions: { expiresIn: '3600s' },
+    })
+  ]
 })
 export class ShoppingCartModule {}
