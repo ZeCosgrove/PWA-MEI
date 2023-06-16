@@ -15,7 +15,7 @@ export class ProductController {
   @Post()
   @HttpCode(201)
   @UseGuards(AuthGuard)
-  @Roles(UserRole.Admin)
+  @Roles(UserRole.Admin, UserRole.Staff)
   createProduct(@Body() createProductDto: CreateProductDto) {
     return this.productService.createProduct(createProductDto);
   }
@@ -81,7 +81,7 @@ export class ProductController {
   @Patch('changeSystemState/:id')
   @HttpCode(201)
   @UseGuards(AuthGuard)
-  @Roles(UserRole.Admin, UserRole.Staff)
+  @Roles(UserRole.Admin)
   updateProductSystemState(@Param('id') id: string, @Body() updateProductSystemState: UpdateProductSystemStateDto) {
     return this.productService.changeProductSystemState(id, updateProductSystemState);
   }

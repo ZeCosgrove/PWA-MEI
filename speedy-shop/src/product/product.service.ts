@@ -7,6 +7,7 @@ import { UpdateProductQuantityDto } from './dto/update-product-quantity.dto';
 import { Product } from './schemas/product.schema';
 import { UpdateProductSystemStateDto } from './dto/update-product-systemstate.dto';
 import { Category } from 'src/category/schemas/category.schema';
+import { ShopLayout } from 'src/shop-layout/schemas/shopping-layout.schema';
 
 
 @Injectable()
@@ -16,9 +17,11 @@ export class ProductService {
    */
   constructor(
     @InjectModel(Product.name) private productModel: Model<Product>,
-    @InjectModel(Category.name) private categoryModel: Model<Category>
+    @InjectModel(Category.name) private categoryModel: Model<Category>,
+    @InjectModel(ShopLayout.name) private shopModel: Model<ShopLayout>
   ) {}
 
+  //#region Create Product
   /**
    * This method creates a new product
    * @param createProductDto product received to validate
@@ -33,6 +36,13 @@ export class ProductService {
       return null;
     }
 
+    // check if the shop exists
+    const shopFinded = await this.shopModel.findById(createProductDto.shop).exec();
+    if (!shopFinded) {
+      return null;
+    }
+
+    // create the new product
     const createdProduct = new this.productModel({
       name: createProductDto.name,
       description: createProductDto.description,
@@ -40,12 +50,15 @@ export class ProductService {
       quantity: createProductDto.quantity,
       category: categoryFinded,
       location: createProductDto.location,
+      shop: shopFinded,
       systemState: createProductDto.systemState,
     });
 
     return await createdProduct.save();
   }
+  //#endregion
 
+  //#region Get Product(s)
   /**
    * This method find all the products in the database
    * @returns returns all the products in the database
@@ -105,6 +118,9 @@ export class ProductService {
     return products;
   }
 
+  //#endregion
+
+  //#region Update Product
   /**
    * This Method Updates a product in the database
    * @param id Product Id to Update
@@ -112,11 +128,15 @@ export class ProductService {
    * @returns Returns the Status of the Update Action
    */
   async changeProduct(id: string, updateProductDto: UpdateProductDto) {
-    // check if the category exists
-    const categoryFinded = await this.categoryModel
-      .findById(updateProductDto.category)
-      .exec();
-    if (!categoryFinded) {
+     // check if the category exists
+     const categoryFinded = await this.categoryModel.findById(updateProductDto.category).exec();
+     if (!categoryFinded) {
+       return null;
+     }
+     
+     // Ceck if the shop exists
+    const shopFinded = await this.shopModel.findById(updateProductDto.shop).exec();
+    if (!shopFinded) {
       return null;
     }
 
@@ -129,6 +149,7 @@ export class ProductService {
         quantity: updateProductDto.quantity,
         category: categoryFinded,
         location: updateProductDto.location,
+        shop: shopFinded,
         systemState: updateProductDto.systemState,
       })
     ).save();
@@ -167,4 +188,6 @@ export class ProductService {
 
     return productToUpdate.save();
   }
+
+  //#endregion
 }

@@ -12,26 +12,26 @@ import { ProductSystemState } from '../enums/product-system-state.enum';
 export class UpdateProductDto extends PartialType(CreateProductDto) {
 
     @IsString()
-    name?: string
+    name: string
 
     @IsString()
-    description?: string
+    description: string
 
     @IsNumber()
-    price?: number
+    price: number
 
     @IsNumber()
-    quantity?: number
+    quantity: number
 
     @IsString()
-    category?: string
+    category: string
 
     @IsNumber()
-    location?: number
+    location: number
 
     @IsString()
-    shop?: string;
+    shop: string;
 
     @IsEnum(ProductSystemState)
-    systemState?: ProductSystemState
+    systemState: ProductSystemState
 }
