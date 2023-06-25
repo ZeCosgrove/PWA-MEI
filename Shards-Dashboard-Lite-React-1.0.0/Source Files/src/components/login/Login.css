@@ -1,0 +1,27 @@
+.content {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+}
+
+.btn-primary {
+  font-size: 16px;
+}
+
+.form-control {
+  font-size: 18px;
+}
+
+.row {
+  margin-top: 20px !important;
+}
+
+.logo {
+  width: 200px;
+  display: block !important;
+  margin: auto !important;
+  margin-bottom: 10% !important;
+}
