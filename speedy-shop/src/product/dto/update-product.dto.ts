@@ -7,7 +7,7 @@ import {
 
 } from 'class-validator';
 import { ProductSystemState } from '../enums/product-system-state.enum';
-import { ProductLocation } from 'src/product-location/schemas/product-location.schema';
+
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {
 
@@ -26,8 +26,12 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
     @IsString()
     category: string
 
-    location: ProductLocation
-    
+    @IsNumber()
+    location: number
+
+    @IsString()
+    shop: string;
+
     @IsEnum(ProductSystemState)
-    systemState : ProductSystemState
+    systemState: ProductSystemState
 }

@@ -6,7 +6,6 @@ import { AddressModule } from './address/address.module';
 import { CartProductModule } from './cart-product/cart-product.module';
 import { HelpModule } from './help/help.module';
 import { ProductModule } from './product/product.module';
-import { ProductLocationModule } from './product-location/product-location.module';
 import { ShopLayoutModule } from './shop-layout/shop-layout.module';
 import { ShoppingCartModule } from './shopping-cart/shopping-cart.module';
 import { UserModule } from './user/user.module';
@@ -21,7 +20,6 @@ import { ConfigModule } from '@nestjs/config';
     CartProductModule,
     HelpModule,
     ProductModule,
-    ProductLocationModule,
     ShopLayoutModule,
     ShoppingCartModule,
     UserModule,

@@ -7,7 +7,7 @@ import {
 
 } from 'class-validator';
 import { ProductSystemState } from '../enums/product-system-state.enum';
-import { ProductLocation } from 'src/product-location/schemas/product-location.schema';
+
 export class CreateProductDto {
 
     @Length(0, 20)
@@ -29,7 +29,12 @@ export class CreateProductDto {
     @IsString()
     category: string
 
-    location: ProductLocation
+    @IsPositive()
+    @IsNumber()
+    location: number
+
+    @IsString()
+    shop: string // shop Id
 
     @IsEnum(ProductSystemState)
     systemState : ProductSystemState

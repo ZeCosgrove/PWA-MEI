@@ -7,6 +7,7 @@ import { ShoppingCart } from './schemas/shopping-cart.schema';
 import { Product } from 'src/product/schemas/product.schema';
 import { User } from 'src/user/schemas/user.schema';
 import { UpdateShoppingCartSystemStateDto } from './dto/update-shopping-cart-system-state.dto';
+import { UpdateShoppingCartProductsDto } from './dto/update-shopping-cart-products.dto';
 
 @Injectable()
 export class ShoppingCartService {
@@ -17,6 +18,7 @@ export class ShoppingCartService {
     @InjectModel(Product.name) private productModel: Model<Product>
   ) {}
 
+  //#region CREATE Shopping Cart
   /**
    * this method creates a new shopping cart 
    * @param createShoppingCartDto the shopping cart received
@@ -50,6 +52,10 @@ export class ShoppingCartService {
 
     return await shoppingCart.save();
   }
+
+  //#endregion
+
+  //#region GET Shopping Cart
 
   /**
    * This method returns all the shopping carts in the database
@@ -102,6 +108,9 @@ export class ShoppingCartService {
     return activeShoppingCarts;
   }
 
+  //#endregion
+
+  //#region UPDATE Shopping Cart
   /**
    * This method updates a shopping cart
    * @param id id of shopping cart to update
@@ -148,5 +157,30 @@ export class ShoppingCartService {
     const shoppingCartUpdated = (await this.shoppingCartModel.findByIdAndUpdate(shoppingCartId, systemStateDto)).save();
     return await shoppingCartUpdated;
   }
+
+  /**
+   * This method updates the products in the shopping cart received
+   * @param shoppingCartId Shopping Cart Identifier
+   * @param productsDto The products of shopping cart
+   * @returns the updated shopping cart
+   */
+  async updateShoppingCartProducts(shoppingCartId: string, productsDto: UpdateShoppingCartProductsDto){
+    const shoppingCart = await this.getShoppingCartById(shoppingCartId);
+    if (!shoppingCart) return null;
+
+    const products = []
+    for (let id = 0; id < productsDto.products.length; id++) {
+      const productId = productsDto.products[id];
+      const product = await this.productModel.findById(productId)
+      if (!product) return null;
+      products.push(product);
+    }
+
+    shoppingCart.products = products;
+    
+    return await shoppingCart.save();
+  }
+
+  //#endregion
 
 }
