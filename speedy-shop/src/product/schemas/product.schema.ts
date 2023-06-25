@@ -30,6 +30,12 @@ export class Product extends Document{
 
   @Prop()
   shop: ShopLayout
+
+  @Prop()
+  weeklyProduct: Boolean
+
+  @Prop()
+  highlight: Boolean
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

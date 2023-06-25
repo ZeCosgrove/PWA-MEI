@@ -8,6 +8,7 @@ import { Product } from './schemas/product.schema';
 import { UpdateProductSystemStateDto } from './dto/update-product-systemstate.dto';
 import { Category } from 'src/category/schemas/category.schema';
 import { ShopLayout } from 'src/shop-layout/schemas/shopping-layout.schema';
+import { UpdateProductHighlightDto } from './dto/update-product-highlight.dto';
 
 
 @Injectable()
@@ -104,6 +105,23 @@ export class ProductService {
   }
 
   /**
+   * This method get the weekly product
+   * @returns the weekly product
+   */
+  async getWeeklyProduct(): Promise<Product>{
+    var product = await this.productModel.findOne({weeklyProduct : true}).exec();
+    return product;
+  }
+
+  /**
+   * This method gets all the highlighted products
+   * @returns the highlighted products
+   */
+  async getHighlightProducts(): Promise<Product[]>{
+    var products = await this.productModel.find({highlight : true}).exec();
+    return products
+  }
+  /**
    * This method returns the products by a given location
    * @param location the location to find the products
    * @returns an array of products or null if none were found
@@ -185,6 +203,14 @@ export class ProductService {
   ) {
     const productToUpdate = await this.productModel.findById(id);
     productToUpdate.systemState = updateProductSystemStateDto.systemState;
+
+    return productToUpdate.save();
+  }
+
+  async changeHighlights(productId: string, updateProductHighlight: UpdateProductHighlightDto){
+    const productToUpdate = await this.productModel.findById(productId);
+    productToUpdate.highlight = updateProductHighlight.highlight
+    productToUpdate.weeklyProduct = updateProductHighlight.weeklyProduct
 
     return productToUpdate.save();
   }

@@ -11,4 +11,6 @@ export class Product {
     location: number
     shop: ShopLayout
     systemState: ProductSystemState
+    weeklyProduct: Boolean
+    highlight: Boolean
 }

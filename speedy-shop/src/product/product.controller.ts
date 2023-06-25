@@ -7,6 +7,7 @@ import { UpdateProductSystemStateDto } from './dto/update-product-systemstate.dt
 import { AuthGuard } from '../user/auth/auth.guard';
 import { Roles } from '../user/auth/roles.decorator';
 import { UserRole } from '../user/enums/user-role.enum';
+import { UpdateProductHighlightDto } from './dto/update-product-highlight.dto';
 
 @Controller('product')
 export class ProductController {
@@ -62,6 +63,19 @@ export class ProductController {
     return this.productService.getProductsByName(name);
   }
 
+  @Get('highlights')
+  @HttpCode(200)
+  getHighlightedProducts(){
+    return this.productService.getHighlightProducts();
+  }
+
+  @Get('weekly-product')
+  @HttpCode(200)
+  getWeeklyProduct(){
+    return this.productService.getWeeklyProduct();
+  }
+
+
   @Patch(':id')
   @HttpCode(201)
   @UseGuards(AuthGuard)
@@ -84,6 +98,14 @@ export class ProductController {
   @Roles(UserRole.Admin)
   updateProductSystemState(@Param('id') id: string, @Body() updateProductSystemState: UpdateProductSystemStateDto) {
     return this.productService.changeProductSystemState(id, updateProductSystemState);
+  }
+
+  @Patch('changeHighlight/:id')
+  @HttpCode(201)
+  @UseGuards(AuthGuard)
+  @Roles(UserRole.Admin)
+  updateProductHighlight(@Param('id') id: string, @Body() updateProductHighlight: UpdateProductHighlightDto){
+    return this.productService.changeHighlights(id, updateProductHighlight);
   }
   
 }
