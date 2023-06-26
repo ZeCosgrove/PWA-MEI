@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, HttpCode, UseGuards, UseInterceptors, UploadedFile, Res } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -8,6 +8,8 @@ import { AuthGuard } from '../user/auth/auth.guard';
 import { Roles } from '../user/auth/roles.decorator';
 import { UserRole } from '../user/enums/user-role.enum';
 import { UpdateProductHighlightDto } from './dto/update-product-highlight.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import {Response} from 'express'
 
 @Controller('product')
 export class ProductController {
@@ -21,10 +23,17 @@ export class ProductController {
     return this.productService.createProduct(createProductDto);
   }
 
+  @Post('/image/:id')
+  @UseInterceptors(FileInterceptor('file'))
+  @HttpCode(201)
+  @UseGuards(AuthGuard)
+  @Roles(UserRole.Admin, UserRole.Staff)
+  updateProducteImage(@Param('id') id: string, @UploadedFile() file: Express.Multer.File){
+    return this.productService.uploadProductImage(id, file);
+  }
+
   @Get()
   @HttpCode(200)
-  @UseGuards(AuthGuard)
-  @Roles(UserRole.Admin, UserRole.Staff, UserRole.Client)
   getProducts() {
     return this.productService.getProducts();
   }
@@ -73,6 +82,19 @@ export class ProductController {
   @HttpCode(200)
   getWeeklyProduct(){
     return this.productService.getWeeklyProduct();
+  }
+
+  @Get('/image/:id/download')
+  @HttpCode(200)
+  getProductImage(@Param('id') id: string, @Res() res: Response){
+    const imageBuffer = this.productService.getProductImage(id);
+    if (!imageBuffer) {
+      return res.status(404).send('Image not found');
+    }
+
+    res.setHeader('Content-Type', 'image/png');
+    res.setHeader('Content-Disposition', 'attachment; filename=IPCA_Logo.png');
+    return res.send(imageBuffer);
   }
 
 

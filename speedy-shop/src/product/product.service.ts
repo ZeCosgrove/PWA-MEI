@@ -43,8 +43,11 @@ export class ProductService {
       return null;
     }
 
+    // alloc image
+    const imageBuffer =  null
     // create the new product
     const createdProduct = new this.productModel({
+      image: imageBuffer,
       name: createProductDto.name,
       description: createProductDto.description,
       price: createProductDto.price,
@@ -56,6 +59,22 @@ export class ProductService {
     });
 
     return await createdProduct.save();
+  }
+
+  /**
+   * This method uploads an image to a product
+   * @param id product identifier
+   * @param image the image to upload
+   * @returns 
+   */
+  async uploadProductImage(id: string, image: Express.Multer.File): Promise<Product>{
+    var product = await this.productModel.findById(id);
+    if (!product) {
+      return null;
+    }
+    product.image = image.buffer;
+    return await product.save();
+
   }
   //#endregion
 
@@ -134,6 +153,19 @@ export class ProductService {
 
     // return the products
     return products;
+  }
+
+  /**
+   * This method gets the image of the product
+   * @param id product identifier
+   * @returns the image buffer of product
+   */
+  async getProductImage(id: string){
+    const product = await this.productModel.findById(id);
+    if (!product) {
+      return null
+    }
+    return product.image
   }
 
   //#endregion
