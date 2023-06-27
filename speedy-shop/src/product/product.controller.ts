@@ -9,6 +9,8 @@ import { Roles } from '../user/auth/roles.decorator';
 import { UserRole } from '../user/enums/user-role.enum';
 import { UpdateProductHighlightDto } from './dto/update-product-highlight.dto';
 
+// test notifications
+import { fcm } from "../firebase.config";
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
