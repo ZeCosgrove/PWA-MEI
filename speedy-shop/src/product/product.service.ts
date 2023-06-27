@@ -43,11 +43,8 @@ export class ProductService {
       return null;
     }
 
-    // alloc image
-    const imageBuffer =  null
     // create the new product
     const createdProduct = new this.productModel({
-      image: imageBuffer,
       name: createProductDto.name,
       description: createProductDto.description,
       price: createProductDto.price,
@@ -68,12 +65,13 @@ export class ProductService {
    * @returns 
    */
   async uploadProductImage(id: string, image: Express.Multer.File): Promise<Product>{
-    var product = await this.productModel.findById(id);
+    var product = await this.productModel.findById(id).exec();
     if (!product) {
       return null;
     }
-    product.image = image.buffer;
-    return await product.save();
+    product.image = image.buffer
+
+    return product.save();
 
   }
   //#endregion
@@ -84,7 +82,7 @@ export class ProductService {
    * @returns returns all the products in the database
    */
   async getProducts(): Promise<Product[]> {
-    return await this.productModel.find();
+    return await this.productModel.find({systemState: 1});
   }
 
   /**
@@ -160,12 +158,14 @@ export class ProductService {
    * @param id product identifier
    * @returns the image buffer of product
    */
-  async getProductImage(id: string){
-    const product = await this.productModel.findById(id);
-    if (!product) {
-      return null
-    }
-    return product.image
+  async getProductImage(id: string): Promise<Buffer>{
+    return this.productModel.findById(id).exec().then((res) => {
+      if(res !== undefined && res.image !== undefined){
+        return res.image;
+      } else
+        return null;
+      
+    });
   }
 
   //#endregion
