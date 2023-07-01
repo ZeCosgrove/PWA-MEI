@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Query,
+} from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -6,13 +16,15 @@ import { AuthGuard } from 'src/user/auth/auth.guard';
 import { Roles } from 'src/user/auth/roles.decorator';
 import { UserRole } from 'src/user/enums/user-role.enum';
 
-@Controller('category')
+@Controller('api/v1/categories')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Get()
-  getCategories() {
-    return this.categoryService.getCategories();
+  getCategories(@Query() queryParam) {
+    var page = queryParam['page'];
+    var perPage = queryParam['perPage'];
+    return this.categoryService.getCategories(page, perPage);
   }
 
   @Get(':id')
@@ -30,7 +42,10 @@ export class CategoryController {
   @Patch(':id')
   @UseGuards(AuthGuard)
   @Roles(UserRole.Admin)
-  updateCategory(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
+  updateCategory(
+    @Param('id') id: string,
+    @Body() updateCategoryDto: UpdateCategoryDto,
+  ) {
     return this.categoryService.updateCategory(id, updateCategoryDto);
   }
 
