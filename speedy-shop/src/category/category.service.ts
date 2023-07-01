@@ -34,6 +34,16 @@ export class CategoryService {
     return output
   }
 
+  async getProductImage(id: string): Promise<Buffer>{
+    return this.categoryModel.findById(id).exec().then((res) => {
+      if(res !== undefined && res.image !== undefined){
+        return res.image;
+      } else
+        return null;
+      
+    });
+  }
+
   async createCategory(input: CreateCategoryDto): Promise<GetCategoryOutput> {
     const createdCategory: Category = new this.categoryModel(input);
     const category: Category = await createdCategory.save();
@@ -41,6 +51,18 @@ export class CategoryService {
     const output = new GetCategoryOutput(category._id, category.name)
 
     return output
+  }
+
+
+  async addCategoryImage(id: string, image: Express.Multer.File): Promise<Category>{
+    var category = await this.categoryModel.findById(id).exec();
+    if (!category) {
+      return null;
+    }
+    category.image = image.buffer
+
+    return category.save();
+
   }
 
   async updateCategory(id: string, input: UpdateCategoryDto) {

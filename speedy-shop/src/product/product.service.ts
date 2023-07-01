@@ -55,7 +55,7 @@ export class ProductService {
       systemState: createProductDto.systemState,
     });
 
-    return await createdProduct.save();
+    return createdProduct.save();
   }
 
   /**

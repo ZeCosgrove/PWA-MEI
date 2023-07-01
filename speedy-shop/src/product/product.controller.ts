@@ -29,7 +29,7 @@ export class ProductController {
   @UseGuards(AuthGuard)
   @Roles(UserRole.Admin, UserRole.Staff)
   updateProducteImage(@Param('id') id: string, 
-    @UploadedFile(new ParseFilePipe({validators: [new FileTypeValidator({ fileType: 'image/jpg' })]})) file: Express.Multer.File){
+    @UploadedFile(new ParseFilePipe({validators: [new FileTypeValidator({ fileType: 'image/png' })]})) file: Express.Multer.File){
     return this.productService.uploadProductImage(id, file);
   }
 
@@ -92,8 +92,8 @@ export class ProductController {
       if (!res) {
         return response.status(404).send('Image not found');
       }else{
-        response.setHeader('Content-Type', 'image/jpg');
-        response.setHeader('Content-Disposition', 'attachment; filename=product.jpg');
+        response.setHeader('Content-Type', 'image/png');
+        response.setHeader('Content-Disposition', 'attachment; filename=product.png');
         response.send(res);
       }
     });  
