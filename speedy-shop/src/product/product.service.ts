@@ -57,7 +57,24 @@ export class ProductService {
       systemState: createProductDto.systemState,
     });
 
-    return await createdProduct.save();
+    return createdProduct.save();
+  }
+
+  /**
+   * This method uploads an image to a product
+   * @param id product identifier
+   * @param image the image to upload
+   * @returns 
+   */
+  async uploadProductImage(id: string, image: Express.Multer.File): Promise<Product>{
+    var product = await this.productModel.findById(id).exec();
+    if (!product) {
+      return null;
+    }
+    product.image = image.buffer
+
+    return product.save();
+
   }
   //#endregion
 
@@ -171,6 +188,21 @@ export class ProductService {
 
     // return the products
     return products;
+  }
+
+  /**
+   * This method gets the image of the product
+   * @param id product identifier
+   * @returns the image buffer of product
+   */
+  async getProductImage(id: string): Promise<Buffer>{
+    return this.productModel.findById(id).exec().then((res) => {
+      if(res !== undefined && res.image !== undefined){
+        return res.image;
+      } else
+        return null;
+      
+    });
   }
 
   //#endregion

@@ -3,6 +3,9 @@ import { Document } from 'mongoose';
 
 @Schema({timestamps: true})
 export class Category extends Document{
+  @Prop({default: null, type: Buffer})
+  image: Buffer;
+
   @Prop()
   name: string;
 }

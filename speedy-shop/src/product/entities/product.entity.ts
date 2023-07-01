@@ -3,6 +3,7 @@ import { ProductSystemState } from '../enums/product-system-state.enum'
 import { Category } from 'src/category/entities/category.entity'
 
 export class Product {
+    image: Buffer
     name: string
     description: string
     price: string
