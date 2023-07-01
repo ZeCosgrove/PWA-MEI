@@ -1,21 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSignIn } from "react-auth-kit";
 import axios from "axios";
 import "./Login.css";
 
+import { toast } from "react-toastify";
+
 const Login = () => {
-  const [login, setLogin] = useState([]);
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+
   const signIn = useSignIn();
   const navigate = useNavigate();
 
-  const bodyParameters = {
-    email: "Test@test.pt",
-    password: "Test"
-  };
+  // const bodyParameters = {
+  //   email: "Test@test.pt",
+  //   password: "Test"
+  // };
 
   const handleSubmit = async e => {
     e.preventDefault();
+
+    const bodyParameters = {
+      email: email,
+      password: password
+    };
 
     try {
       const res = await axios.post(
@@ -33,15 +42,15 @@ const Login = () => {
         }
       });
 
-      navigate("/");
-    } catch (err) {
-      alert("Error");
+      navigate("/users");
+    } catch (error) {
+      toast.error(error.response.data.message);
     }
   };
 
   return (
     <div className="content">
-      <img src={require("../../images/logo.png")} className="logo" />
+      <img src={require("../../images/logo.png")} className="logo" alt="logo" />
       <div>
         <div className="form-group row">
           <label htmlFor="exampleInputEmail1">Endereço de Email</label>
@@ -51,6 +60,7 @@ const Login = () => {
             id="exampleInputEmail1"
             aria-describedby="emailHelp"
             placeholder="exemplo@exemplo.com"
+            onChange={e => setEmail(e.target.value)}
           />
         </div>
         <div className="form-group row">
@@ -60,13 +70,14 @@ const Login = () => {
             className="form-control"
             id="exampleInputPassword1"
             placeholder="*******"
+            onChange={e => setPassword(e.target.value)}
           />
           <small id="emailHelp" className="form-text text-muted">
             Todos os seus dados são confidenciais.
           </small>
         </div>
         <button
-          type="submit"
+          type="button"
           className="row btn btn-primary float-end"
           onClick={handleSubmit}
         >

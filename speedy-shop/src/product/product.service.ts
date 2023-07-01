@@ -9,7 +9,7 @@ import { UpdateProductSystemStateDto } from './dto/update-product-systemstate.dt
 import { Category } from 'src/category/schemas/category.schema';
 import { ShopLayout } from 'src/shop-layout/schemas/shopping-layout.schema';
 import { UpdateProductHighlightDto } from './dto/update-product-highlight.dto';
-
+import { Pagination } from 'src/pagination/interface/pagination.interface';
 
 @Injectable()
 export class ProductService {
@@ -19,7 +19,7 @@ export class ProductService {
   constructor(
     @InjectModel(Product.name) private productModel: Model<Product>,
     @InjectModel(Category.name) private categoryModel: Model<Category>,
-    @InjectModel(ShopLayout.name) private shopModel: Model<ShopLayout>
+    @InjectModel(ShopLayout.name) private shopModel: Model<ShopLayout>,
   ) {}
 
   //#region Create Product
@@ -38,7 +38,9 @@ export class ProductService {
     }
 
     // check if the shop exists
-    const shopFinded = await this.shopModel.findById(createProductDto.shop).exec();
+    const shopFinded = await this.shopModel
+      .findById(createProductDto.shop)
+      .exec();
     if (!shopFinded) {
       return null;
     }
@@ -81,8 +83,39 @@ export class ProductService {
    * This method find all the products in the database
    * @returns returns all the products in the database
    */
-  async getProducts(): Promise<Product[]> {
-    return await this.productModel.find({systemState: 1});
+  async getProducts(page: string, perPage: string) {
+    let products = [];
+
+    if (page != undefined && perPage != undefined && +perPage > 0) {
+      products = await this.productModel
+        .find()
+        .skip(+perPage * +page)
+        .limit(+perPage);
+    } else {
+      products = await this.productModel.find();
+    }
+
+    let previous = null;
+    let next = null;
+
+    if (+page > 0) {
+      previous = `http://localhost:3000/api/v1/product?page=${
+        +page - 1
+      }&perPage=${+perPage}`;
+    }
+    if (+perPage * +page + +perPage < (await this.productModel.count())) {
+      next = `http://localhost:3000/api/v1/product?page=${
+        +page + 1
+      }&perPage=${+perPage}`;
+    }
+
+    var outputPagination: Pagination = {
+      object: products,
+      previous: previous,
+      next: next,
+    };
+
+    return outputPagination;
   }
 
   /**
@@ -96,11 +129,13 @@ export class ProductService {
 
   /**
    * This method returns the products with the name passed by argument
-   * @param name Product Name 
+   * @param name Product Name
    * @returns returns an array of product
    */
-  async getProductsByName(name: string): Promise<Product[]>{
-    return await this.productModel.find({"name": {"$regex": name, "$options": "i"}})
+  async getProductsByName(name: string): Promise<Product[]> {
+    return await this.productModel.find({
+      name: { $regex: name, $options: 'i' },
+    });
   }
 
   /**
@@ -125,8 +160,10 @@ export class ProductService {
    * This method get the weekly product
    * @returns the weekly product
    */
-  async getWeeklyProduct(): Promise<Product>{
-    var product = await this.productModel.findOne({weeklyProduct : true}).exec();
+  async getWeeklyProduct(): Promise<Product> {
+    var product = await this.productModel
+      .findOne({ weeklyProduct: true })
+      .exec();
     return product;
   }
 
@@ -134,9 +171,9 @@ export class ProductService {
    * This method gets all the highlighted products
    * @returns the highlighted products
    */
-  async getHighlightProducts(): Promise<Product[]>{
-    var products = await this.productModel.find({highlight : true}).exec();
-    return products
+  async getHighlightProducts(): Promise<Product[]> {
+    var products = await this.productModel.find({ highlight: true }).exec();
+    return products;
   }
   /**
    * This method returns the products by a given location
@@ -178,14 +215,18 @@ export class ProductService {
    * @returns Returns the Status of the Update Action
    */
   async changeProduct(id: string, updateProductDto: UpdateProductDto) {
-     // check if the category exists
-     const categoryFinded = await this.categoryModel.findById(updateProductDto.category).exec();
-     if (!categoryFinded) {
-       return null;
-     }
-     
-     // Ceck if the shop exists
-    const shopFinded = await this.shopModel.findById(updateProductDto.shop).exec();
+    // check if the category exists
+    const categoryFinded = await this.categoryModel
+      .findById(updateProductDto.category)
+      .exec();
+    if (!categoryFinded) {
+      return null;
+    }
+
+    // Ceck if the shop exists
+    const shopFinded = await this.shopModel
+      .findById(updateProductDto.shop)
+      .exec();
     if (!shopFinded) {
       return null;
     }
@@ -239,10 +280,13 @@ export class ProductService {
     return productToUpdate.save();
   }
 
-  async changeHighlights(productId: string, updateProductHighlight: UpdateProductHighlightDto){
+  async changeHighlights(
+    productId: string,
+    updateProductHighlight: UpdateProductHighlightDto,
+  ) {
     const productToUpdate = await this.productModel.findById(productId);
-    productToUpdate.highlight = updateProductHighlight.highlight
-    productToUpdate.weeklyProduct = updateProductHighlight.weeklyProduct
+    productToUpdate.highlight = updateProductHighlight.highlight;
+    productToUpdate.weeklyProduct = updateProductHighlight.weeklyProduct;
 
     return productToUpdate.save();
   }

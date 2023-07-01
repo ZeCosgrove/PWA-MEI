@@ -1,35 +1,52 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-const Pagination = () => (
-  <nav aria-label="Page navigation d-flex justify-content-center">
-    <ul class="pagination">
-      <li class="page-item">
-        <a class="page-link" href="#">
-          Anterior
-        </a>
-      </li>
-      <li class="page-item">
-        <a class="page-link" href="#">
-          1
-        </a>
-      </li>
-      <li class="page-item">
-        <a class="page-link" href="#">
-          2
-        </a>
-      </li>
-      <li class="page-item">
-        <a class="page-link" href="#">
-          3
-        </a>
-      </li>
-      <li class="page-item">
-        <a class="page-link" href="#">
-          Próximo
-        </a>
-      </li>
-    </ul>
-  </nav>
-);
+const Pagination = ({ onCounterChange, pagination }) => {
+  const nextPage = () => {
+    onCounterChange(1);
+  };
+  const previousPage = () => {
+    onCounterChange(-1);
+  };
+
+  return (
+    <nav aria-label="Page navigation example">
+      <ul className="pagination justify-content-center">
+        {pagination.previous != null && (
+          <li className="page-item">
+            <button className="page-link" onClick={previousPage}>
+              Anterior
+            </button>
+          </li>
+        )}
+        {pagination.previous != null && (
+          <li className="page-item">
+            <button className="page-link" onClick={previousPage}>
+              {+pagination.page}
+            </button>
+          </li>
+        )}
+        <li className="page-item">
+          <button className="page-link">
+            <b>{+pagination.page + 1}</b>
+          </button>
+        </li>
+        {pagination.next != null && (
+          <li className="page-item">
+            <button className="page-link" onClick={nextPage}>
+              {+pagination.page + 2}
+            </button>
+          </li>
+        )}
+        {pagination.next != null && (
+          <li className="page-item">
+            <button className="page-link" onClick={nextPage}>
+              Próximo
+            </button>
+          </li>
+        )}
+      </ul>
+    </nav>
+  );
+};
 
 export default Pagination;

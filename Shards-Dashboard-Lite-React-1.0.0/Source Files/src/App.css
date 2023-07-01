@@ -52,3 +52,11 @@ html {
   display: flex;
   justify-content: center;
 }
+
+b {
+  color: rgb(39, 65, 86) !important;
+}
+
+.btn-add {
+  margin-right: 30px !important;
+}
