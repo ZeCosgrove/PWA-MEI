@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  UseGuards,
+  Query,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserInputDto } from './dto/create-user-input.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -11,14 +20,16 @@ import { AuthGuard } from './auth/auth.guard';
 import { Roles } from './auth/roles.decorator';
 import { UserRole } from './enums/user-role.enum';
 
-@Controller('user')
+@Controller('api/v1/users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
   @UseGuards(AuthGuard)
-  getUsers() {
-    return this.userService.getUsers();
+  getUsers(@Query() queryParam) {
+    var page = queryParam['page'];
+    var perPage = queryParam['perPage'];
+    return this.userService.getUsers(page, perPage);
   }
 
   @Get(':id')
@@ -63,14 +74,20 @@ export class UserController {
   @Patch('systemState/update/:id')
   @UseGuards(AuthGuard)
   @Roles(UserRole.Admin)
-  updateUserSystemState(@Param('id') id: string, @Body() updateUserDto: UpdateUserSystemStateDto) {
+  updateUserSystemState(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserSystemStateDto,
+  ) {
     return this.userService.updateUserSystemState(id, updateUserDto);
   }
 
   @Patch('role/update/:id')
   @UseGuards(AuthGuard)
   @Roles(UserRole.Admin)
-  updateUserRole(@Param('id') id: string, @Body() updateUserDto: UpdateUserRoleDto) {
+  updateUserRole(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserRoleDto,
+  ) {
     return this.userService.updateUserRole(id, updateUserDto);
   }
 

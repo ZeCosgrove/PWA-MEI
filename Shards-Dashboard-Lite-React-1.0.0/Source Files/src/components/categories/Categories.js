@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useIsAuthenticated } from "react-auth-kit";
 import {
   Container,
   Row,
@@ -16,30 +15,27 @@ import { useNavigate } from "react-router-dom";
 import Pagination from "../pagination/Pagination";
 import { toast } from "react-toastify";
 
-const Users = () => {
-  const [users, setUsers] = useState([]);
+const Categories = () => {
+  const [refresh, isToRefresh] = useState(0);
+  const [categories, setCategories] = useState([]);
   const [page, setPage] = useState(0);
   const [pagination, setPagination] = useState({
     next: null,
     previous: null,
     page: 0
   });
-  const isAuthenticated = useIsAuthenticated();
+
   const navigate = useNavigate();
 
   const handleCounterChange = newCounter => {
     setPage(page + newCounter);
   };
 
-  if (!isAuthenticated()) {
-    navigate("/login");
-  }
-
   useEffect(() => {
     axios
-      .get(`http://localhost:3000/api/v1/users?page=${page}&perPage=5`)
+      .get(`http://localhost:3000/api/v1/categories?page=${page}&perPage=5`)
       .then(response => {
-        setUsers(response.data.object);
+        setCategories(response.data.object);
         setPagination({
           next: response.data.next,
           previous: response.data.previous,
@@ -49,30 +45,34 @@ const Users = () => {
       .catch(err => {
         console.log(err);
       });
-  }, [page]);
+  }, [page, refresh]);
 
   const handleDelete = async e => {
     try {
-      const res = await axios.get(
-        `http://localhost:3000/api/v1/users/delete/${e.target.id}`
+      await axios.delete(
+        `http://localhost:3000/api/v1/categories/${e.target.id}`
       );
 
-      toast.success(`Utilizador "${res.data.name}" eliminado com sucesso`);
+      toast.success("Categoria eliminada com sucesso");
+      isToRefresh(refresh + 1);
     } catch (err) {
       console.log(err);
     }
   };
 
   const handleEdit = async e => {
-    navigate(`/users/${e.target.id}`);
+    navigate(`/categories/${e.target.id}`);
   };
 
-  const DisplayData = users.map(info => {
+  const handleAdd = async e => {
+    navigate(`/categories/add`);
+  };
+
+  const DisplayData = categories.map(info => {
     return (
       <tr key={info._id}>
         <td>{info._id}</td>
         <td>{info.name}</td>
-        <td>{info.email}</td>
         <td>
           <Button
             className="mb-2 mr-1 btn-secondary"
@@ -98,15 +98,23 @@ const Users = () => {
   return (
     <Container fluid className="main-content-container px-4">
       <Row noGutters className="page-header py-4">
-        <PageTitle sm="4" title="Utilizadores" className="text-sm-left" />
+        <div className="col-md-8">
+          <PageTitle sm="4" title="Categorias" className="text-sm-left" />
+        </div>
+        <div className="col-md-4">
+          <Button
+            className="mb-2 mr-1 btn-primary btn-add float-end"
+            onClick={handleAdd}
+          >
+            Adicionar
+          </Button>
+        </div>
       </Row>
 
       <Row>
         <Col>
           <Card small className="mb-4">
-            <CardHeader className="border-bottom">
-              <h6 className="m-0">Utilizadores Ativos</h6>
-            </CardHeader>
+            <CardHeader className="border-bottom"></CardHeader>
             <CardBody className="p-0 pb-3">
               <table className="table mb-0">
                 <thead className="bg-light">
@@ -116,9 +124,6 @@ const Users = () => {
                     </th>
                     <th scope="col" className="border-0">
                       Nome
-                    </th>
-                    <th scope="col" className="border-0">
-                      Email
                     </th>
                     <th scope="col" className="border-0">
                       Editar
@@ -142,4 +147,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Categories;

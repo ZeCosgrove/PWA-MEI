@@ -6,10 +6,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 
-import { User } from './schemas/user.schema'
-import { CreateUserOutput } from './entities/create-user-output.entity'
-import { GetUserOutput } from './entities/get-user-output.entity'
-import { GetUserDetailsOutput } from './entities/get-user-details-output.entity'
+import { User } from './schemas/user.schema';
+import { CreateUserOutput } from './entities/create-user-output.entity';
+import { GetUserOutput } from './entities/get-user-output.entity';
+import { GetUserDetailsOutput } from './entities/get-user-details-output.entity';
 import { UserRole } from './enums/user-role.enum';
 import { UserSystemState } from './enums/user-system-state.enum';
 import { UpdateUserSystemStateDto } from './dto/update-user-system-state.dto';
@@ -17,137 +17,205 @@ import { UpdateUserRoleDto } from './dto/update-user-role.dto';
 import { LoginUserInputDto } from './dto/login-user-input.dto';
 import { RecoverPasswordInputDto } from './dto/recover-password-input.dto';
 import { ChangePasswordInputDto } from './dto/change-password-input.dto';
+import { Pagination } from '../pagination/interface/pagination.interface';
 import { ForbiddenException } from 'src/exception/exception-handler';
-
 
 @Injectable()
 export class UserService {
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    private jwtService: JwtService,
+  ) {}
 
-  constructor(@InjectModel(User.name) private userModel: Model<User>, private jwtService: JwtService) {}
+  async getUsers(page: string, perPage: string) {
+    const filter = {
+      systemState: {
+        $in: [
+          UserSystemState.Created,
+          UserSystemState.Active,
+          UserSystemState.Inactive,
+        ],
+      },
+    };
 
-  async getUsers(): Promise<GetUserOutput[]> {
+    let users: User[] = [];
 
-    const filter = {systemState: {$in: [UserSystemState.Created, UserSystemState.Active, UserSystemState.Inactive]}}
+    if (page != undefined && perPage != undefined && +perPage > 0) {
+      users = await this.userModel
+        .find(filter)
+        .skip(+perPage * +page)
+        .limit(+perPage);
+    } else {
+      users = await this.userModel.find(filter).exec();
+    }
 
-    const users: User[] = await this.userModel.find(filter).exec()
-    var output: GetUserOutput[] = new Array
+    var output: GetUserOutput[] = new Array();
 
-    users.forEach(user => {
-      const singleUser = new GetUserOutput(user._id, user.name, user.email)
-      output.push(singleUser)
+    users.forEach(async (user) => {
+      const singleUser = new GetUserOutput(user._id, user.name, user.email);
+      output.push(singleUser);
     });
-    
-    return output
+
+    let previous = null;
+    let next = null;
+
+    if (+page > 0) {
+      previous = `http://localhost:3000/api/v1/users?page=${
+        +page - 1
+      }&perPage=${+perPage}`;
+    }
+    if (+perPage * +page + +perPage < (await this.userModel.count(filter))) {
+      next = `http://localhost:3000/api/v1/users?page=${
+        +page + 1
+      }&perPage=${+perPage}`;
+    }
+
+    var outputPagination: Pagination = {
+      object: output,
+      previous: previous,
+      next: next,
+    };
+
+    return outputPagination;
   }
 
   async getUserById(id: string) {
-    const user: User = await this.userModel.findById(id).exec()
+    const user: User = await this.userModel.findById(id).exec();
 
-    const output = new CreateUserOutput(user._id, user.name, user.email)
+    const output = new CreateUserOutput(user._id, user.name, user.email);
 
-    return output
+    return output;
   }
 
   async getUsersByRole(role: number): Promise<GetUserOutput[]> {
-    const filter = {systemState: {$in: [UserSystemState.Created, UserSystemState.Active, UserSystemState.Inactive]}, role: role}
-    
-    const users: User[] = await this.userModel.find(filter).exec()
+    const filter = {
+      systemState: {
+        $in: [
+          UserSystemState.Created,
+          UserSystemState.Active,
+          UserSystemState.Inactive,
+        ],
+      },
+      role: role,
+    };
 
-    var output: GetUserOutput[] = new Array
+    const users: User[] = await this.userModel.find(filter).exec();
 
-    users.forEach(user => {
-      const singleUser = new GetUserOutput(user._id, user.name, user.email)
-      output.push(singleUser)
+    var output: GetUserOutput[] = new Array();
+
+    users.forEach((user) => {
+      const singleUser = new GetUserOutput(user._id, user.name, user.email);
+      output.push(singleUser);
     });
-    
-    return output
+
+    return output;
   }
-  
+
   async getUserDetails(id: string): Promise<GetUserDetailsOutput> {
-    const user: User = await this.userModel.findById(id).exec()
+    const user: User = await this.userModel.findById(id).exec();
 
-    const output = new GetUserDetailsOutput(user._id, user.name, user.email, user.role, user.nif, user.mobile, user.address, user.systemState)
+    const output = new GetUserDetailsOutput(
+      user._id,
+      user.name,
+      user.email,
+      user.role,
+      user.nif,
+      user.mobile,
+      user.address,
+      user.systemState,
+    );
 
-    return output
+    return output;
   }
 
   async getDeletedUsers(): Promise<GetUserOutput[]> {
-    const users: User[] = await this.userModel.find({systemState: UserSystemState.Terminated}).exec()
+    const users: User[] = await this.userModel
+      .find({ systemState: UserSystemState.Terminated })
+      .exec();
 
-    var output: GetUserOutput[] = new Array
+    var output: GetUserOutput[] = new Array();
 
-    users.forEach(user => {
-      const singleUser = new GetUserOutput(user._id, user.name, user.email)
-      output.push(singleUser)
+    users.forEach((user) => {
+      const singleUser = new GetUserOutput(user._id, user.name, user.email);
+      output.push(singleUser);
     });
-    
-    return output
+
+    return output;
   }
 
   async registerUser(input: CreateUserInputDto) {
+    const existingUser = await this.userModel
+      .find({ email: input.email })
+      .exec();
 
-    const existingUser = await this.userModel.find({ email: input.email }).exec()
-
-    if (existingUser.length == 0){
+    if (existingUser.length == 0) {
       const createdUser = new this.userModel(input);
-      createdUser.role = UserRole.Client
-      createdUser.systemState = UserSystemState.Active
-  
+      createdUser.role = UserRole.Client;
+      createdUser.systemState = UserSystemState.Active;
+
       const user: User = await createdUser.save();
-  
-      const output = new GetUserOutput(user._id, user.name, user.email)
-  
-      return output
+
+      const output = new GetUserOutput(user._id, user.name, user.email);
+
+      return output;
     }
 
     //User exists
-    throw new ForbiddenException("User already exists!");
+    throw new ForbiddenException('User already exists!');
   }
 
   async updateUser(id: string, input: UpdateUserDto) {
-    await this.userModel.updateOne({ _id: id}, input).exec()
+    await this.userModel.updateOne({ _id: id }, input).exec();
 
-    return this.getUserById(id)
+    return this.getUserById(id);
   }
 
   async updateUserSystemState(id: string, input: UpdateUserSystemStateDto) {
-    await this.userModel.updateOne({ _id: id}, input).exec()
+    await this.userModel.updateOne({ _id: id }, input).exec();
 
-    return this.getUserById(id)
+    return this.getUserById(id);
   }
 
   async updateUserRole(id: string, input: UpdateUserRoleDto) {
-    await this.userModel.updateOne({ _id: id}, input).exec()
+    await this.userModel.updateOne({ _id: id }, input).exec();
 
-    return this.getUserById(id)
+    return this.getUserById(id);
   }
 
   async deleteUser(id: string) {
-    const user: User = await this.userModel.findById(id).exec()
+    const user: User = await this.userModel.findById(id).exec();
 
-    user.systemState = UserSystemState.Terminated
+    user.systemState = UserSystemState.Terminated;
 
-    await this.userModel.updateOne({ _id: id}, user).exec()
+    await this.userModel.updateOne({ _id: id }, user).exec();
 
-    return this.getUserById(id)
+    return this.getUserById(id);
   }
 
   async loginUser(input: LoginUserInputDto) {
+    const user = await this.userModel
+      .findOne({ email: input.email, password: input.password })
+      .exec();
 
-    const user = await this.userModel.findOne({ email: input.email, password: input.password }).exec()
-
-    if (user !== null){
-
+    if (user !== null) {
       const payload = { sub: user._id, username: user.name, role: user.role };
       let token = {
         //access_token: await this.jwtService.signAsync(payload),
-        access_token: await this.jwtService.signAsync(payload)
+        access_token: await this.jwtService.signAsync(payload),
       };
+      var decodedToken = this.jwtService.decode(token.access_token);
+      var expiresIn = decodedToken['exp'] - decodedToken['iat'];
 
       //return this.getUserById(user._id)
-      const output = new CreateUserOutput(user._id, user.name, user.email, token.access_token)
+      const output = new CreateUserOutput(
+        user._id,
+        user.name,
+        user.email,
+        token.access_token,
+        expiresIn,
+      );
 
-      return output
+      return output;
     }
 
     //User and password dont match
@@ -155,31 +223,36 @@ export class UserService {
   }
 
   async recoverPassword(input: RecoverPasswordInputDto): Promise<string> {
-    const user: User = await this.userModel.findOne({ email: input.email}).exec()
+    const user: User = await this.userModel
+      .findOne({ email: input.email })
+      .exec();
 
-    if (user !== null){
-      let r: string = (Math.random() + 1).toString(36).substring(2) + (Math.random() + 1).toString(36).substring(2);
+    if (user !== null) {
+      let r: string =
+        (Math.random() + 1).toString(36).substring(2) +
+        (Math.random() + 1).toString(36).substring(2);
 
-      user.password = r
-  
-      await this.userModel.updateOne({ _id: user._id}, user).exec()
+      user.password = r;
 
-      return user.password
+      await this.userModel.updateOne({ _id: user._id }, user).exec();
+
+      return user.password;
     }
 
     //Email not found
-    throw new ForbiddenException("Email not found!");
+    throw new ForbiddenException('Email not found!');
   }
 
   async changePassword(input: ChangePasswordInputDto): Promise<GetUserOutput> {
-    const user: User = await this.userModel.findOne({ email: input.email, password: input.oldPassword}).exec()
+    const user: User = await this.userModel
+      .findOne({ email: input.email, password: input.oldPassword })
+      .exec();
 
-    if (user !== null){
-      
-      user.password = input.newPassword
-      await this.userModel.updateOne({ _id: user._id}, user).exec()
+    if (user !== null) {
+      user.password = input.newPassword;
+      await this.userModel.updateOne({ _id: user._id }, user).exec();
 
-      return this.getUserById(user._id)
+      return this.getUserById(user._id);
     }
 
     //User and password dont match
