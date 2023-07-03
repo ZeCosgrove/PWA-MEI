@@ -9,7 +9,15 @@ import {
   HttpCode,
   Query,
   UseGuards,
+  HttpCode, 
+  UseGuards, 
+  UseInterceptors, 
+  UploadedFile, 
+  Res, 
+  ParseFilePipe, 
+  FileTypeValidator
 } from '@nestjs/common';
+
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -19,6 +27,8 @@ import { AuthGuard } from '../user/auth/auth.guard';
 import { Roles } from '../user/auth/roles.decorator';
 import { UserRole } from '../user/enums/user-role.enum';
 import { UpdateProductHighlightDto } from './dto/update-product-highlight.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Express, Response } from 'express';
 
 @Controller('api/v1/products')
 export class ProductController {
@@ -32,10 +42,18 @@ export class ProductController {
     return this.productService.createProduct(createProductDto);
   }
 
+  @Post('/image/:id')
+  @UseInterceptors(FileInterceptor('file'))
+  @HttpCode(201)
+  @UseGuards(AuthGuard)
+  @Roles(UserRole.Admin, UserRole.Staff)
+  updateProducteImage(@Param('id') id: string, 
+    @UploadedFile(new ParseFilePipe({validators: [new FileTypeValidator({ fileType: 'image/png' })]})) file: Express.Multer.File){
+    return this.productService.uploadProductImage(id, file);
+  }
+
   @Get()
   @HttpCode(200)
-  @UseGuards(AuthGuard)
-  @Roles(UserRole.Admin, UserRole.Staff, UserRole.Client)
   getProducts(@Query() queryParam) {
     var page = queryParam['page'];
     var perPage = queryParam['perPage'];
@@ -86,6 +104,21 @@ export class ProductController {
     return this.productService.getWeeklyProduct();
   }
 
+
+  @Get('/image/:id/download')
+  @HttpCode(200)
+  getProductImage(@Param('id') id: string, @Res() response: Response){
+    this.productService.getProductImage(id).then((res) => {
+      if (!res) {
+        return response.status(404).send('Image not found');
+      }else{
+        response.setHeader('Content-Type', 'image/png');
+        response.setHeader('Content-Disposition', 'attachment; filename=product.png');
+        response.send(res);
+      }
+    });  
+  }
+  
   @Patch(':id')
   @HttpCode(201)
   @UseGuards(AuthGuard)
