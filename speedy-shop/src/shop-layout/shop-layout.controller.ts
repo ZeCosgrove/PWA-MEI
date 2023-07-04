@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ShopLayoutService } from './shop-layout.service';
 import { UpdateShopLayoutDto } from './dto/update-shop-layout.dto';
 import { UpdateShopLayoutSystemStateDto } from './dto/update-shop-layout-system-state.dto';
@@ -9,7 +18,7 @@ import { AuthGuard } from 'src/user/auth/auth.guard';
 import { Roles } from 'src/user/auth/roles.decorator';
 import { UserRole } from 'src/user/enums/user-role.enum';
 
-@Controller('shop-layout')
+@Controller('api/v1/shop-layouts')
 export class ShopLayoutController {
   constructor(private readonly shopLayoutService: ShopLayoutService) {}
 
@@ -21,8 +30,10 @@ export class ShopLayoutController {
   }
 
   @Get()
-  getShopFloors() {
-    return this.shopLayoutService.getShopFloors();
+  getShopFloors(@Query() queryParam) {
+    var page = queryParam['page'];
+    var perPage = queryParam['perPage'];
+    return this.shopLayoutService.getShopFloors(page, perPage);
   }
 
   @Get(':id')
@@ -33,29 +44,50 @@ export class ShopLayoutController {
   @Patch(':id')
   @UseGuards(AuthGuard)
   @Roles(UserRole.Admin)
-  updateShopFloor(@Param('id') id: string, @Body() updateShopLayoutDto: UpdateShopLayoutDto) {
+  updateShopFloor(
+    @Param('id') id: string,
+    @Body() updateShopLayoutDto: UpdateShopLayoutDto,
+  ) {
     return this.shopLayoutService.updateShopFloor(id, updateShopLayoutDto);
   }
 
   @Patch('/add-inner-layout/:id')
   @UseGuards(AuthGuard)
   @Roles(UserRole.Admin)
-  addShopFloorInnerLayout(@Param('id') id: string, @Body() updateShopLayoutDto: InnerLayout) {
-    return this.shopLayoutService.addShopFloorInnerLayout(id, updateShopLayoutDto);
+  addShopFloorInnerLayout(
+    @Param('id') id: string,
+    @Body() updateShopLayoutDto: InnerLayout,
+  ) {
+    return this.shopLayoutService.addShopFloorInnerLayout(
+      id,
+      updateShopLayoutDto,
+    );
   }
 
   @Patch('/remove-inner-layout/:id')
   @UseGuards(AuthGuard)
   @Roles(UserRole.Admin)
-  removeShopFloorInnerLayout(@Param('id') id: string, @Body() updateShopLayoutDto: InnerLayout) {
-    return this.shopLayoutService.removeShopFloorInnerLayout(id, updateShopLayoutDto);
+  removeShopFloorInnerLayout(
+    @Param('id') id: string,
+    @Body() updateShopLayoutDto: InnerLayout,
+  ) {
+    return this.shopLayoutService.removeShopFloorInnerLayout(
+      id,
+      updateShopLayoutDto,
+    );
   }
 
   @Patch('/change-system-state/:id')
   @UseGuards(AuthGuard)
   @Roles(UserRole.Admin)
-  updateShopFloorSystemState(@Param('id') id: string, @Body() updateShopLayoutDto: UpdateShopLayoutSystemStateDto) {
-    return this.shopLayoutService.updateShopFloorSystemState(id, updateShopLayoutDto);
+  updateShopFloorSystemState(
+    @Param('id') id: string,
+    @Body() updateShopLayoutDto: UpdateShopLayoutSystemStateDto,
+  ) {
+    return this.shopLayoutService.updateShopFloorSystemState(
+      id,
+      updateShopLayoutDto,
+    );
   }
 
   @Post('/get-nearest')

@@ -7,12 +7,12 @@ import {
   Param,
   Delete,
   Query,
-  HttpCode, 
-  UseGuards, 
-  UseInterceptors, 
-  UploadedFile, 
-  Res, 
-  ParseFilePipe, 
+  HttpCode,
+  UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  Res,
+  ParseFilePipe,
   FileTypeValidator
 } from '@nestjs/common';
 
@@ -45,8 +45,15 @@ export class ProductController {
   @HttpCode(201)
   @UseGuards(AuthGuard)
   @Roles(UserRole.Admin, UserRole.Staff)
-  updateProducteImage(@Param('id') id: string, 
-    @UploadedFile(new ParseFilePipe({validators: [new FileTypeValidator({ fileType: 'image/png' })]})) file: Express.Multer.File){
+  updateProducteImage(
+    @Param('id') id: string,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [new FileTypeValidator({ fileType: 'image/png' })],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
     return this.productService.uploadProductImage(id, file);
   }
 
@@ -55,7 +62,16 @@ export class ProductController {
   getProducts(@Query() queryParam) {
     var page = queryParam['page'];
     var perPage = queryParam['perPage'];
-    return this.productService.getProducts(page, perPage);
+    var product = queryParam['product'];
+    var category = queryParam['category'];
+    var shop = queryParam['shop'];
+    return this.productService.getProducts(
+      page,
+      perPage,
+      product,
+      category,
+      shop,
+    );
   }
 
   @Get('category/:category')
@@ -102,21 +118,23 @@ export class ProductController {
     return this.productService.getWeeklyProduct();
   }
 
-
   @Get('/image/:id/download')
   @HttpCode(200)
-  getProductImage(@Param('id') id: string, @Res() response: Response){
+  getProductImage(@Param('id') id: string, @Res() response: Response) {
     this.productService.getProductImage(id).then((res) => {
       if (!res) {
         return response.status(404).send('Image not found');
-      }else{
+      } else {
         response.setHeader('Content-Type', 'image/png');
-        response.setHeader('Content-Disposition', 'attachment; filename=product.png');
+        response.setHeader(
+          'Content-Disposition',
+          'attachment; filename=product.png',
+        );
         response.send(res);
       }
-    });  
+    });
   }
-  
+
   @Patch(':id')
   @HttpCode(201)
   @UseGuards(AuthGuard)
