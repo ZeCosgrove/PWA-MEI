@@ -64,17 +64,19 @@ export class ProductService {
    * This method uploads an image to a product
    * @param id product identifier
    * @param image the image to upload
-   * @returns 
+   * @returns
    */
-  async uploadProductImage(id: string, image: Express.Multer.File): Promise<Product>{
+  async uploadProductImage(
+    id: string,
+    image: Express.Multer.File,
+  ): Promise<Product> {
     var product = await this.productModel.findById(id).exec();
     if (!product) {
       return null;
     }
-    product.image = image.buffer
+    product.image = image.buffer;
 
     return product.save();
-
   }
   //#endregion
 
@@ -83,16 +85,36 @@ export class ProductService {
    * This method find all the products in the database
    * @returns returns all the products in the database
    */
-  async getProducts(page: string, perPage: string) {
+  async getProducts(
+    page: string,
+    perPage: string,
+    product: string,
+    category: string,
+    shop: string,
+  ) {
     let products = [];
+
+    let filter = {};
+
+    if (product !== undefined) {
+      filter['name'] = { $regex: product, $options: 'i' };
+    }
+
+    if (category !== undefined) {
+      filter['category.name'] = { $regex: category, $options: 'i' };
+    }
+
+    if (shop !== undefined) {
+      filter['shop.name'] = { $regex: shop, $options: 'i' };
+    }
 
     if (page != undefined && perPage != undefined && +perPage > 0) {
       products = await this.productModel
-        .find()
+        .find(filter)
         .skip(+perPage * +page)
         .limit(+perPage);
     } else {
-      products = await this.productModel.find();
+      products = await this.productModel.find(filter);
     }
 
     let previous = null;
@@ -103,7 +125,7 @@ export class ProductService {
         +page - 1
       }&perPage=${+perPage}`;
     }
-    if (+perPage * +page + +perPage < (await this.productModel.count())) {
+    if (+perPage * +page + +perPage < (await this.productModel.count(filter))) {
       next = `http://localhost:3000/api/v1/product?page=${
         +page + 1
       }&perPage=${+perPage}`;
@@ -195,14 +217,15 @@ export class ProductService {
    * @param id product identifier
    * @returns the image buffer of product
    */
-  async getProductImage(id: string): Promise<Buffer>{
-    return this.productModel.findById(id).exec().then((res) => {
-      if(res !== undefined && res.image !== undefined){
-        return res.image;
-      } else
-        return null;
-      
-    });
+  async getProductImage(id: string): Promise<Buffer> {
+    return this.productModel
+      .findById(id)
+      .exec()
+      .then((res) => {
+        if (res !== undefined && res.image !== undefined) {
+          return res.image;
+        } else return null;
+      });
   }
 
   //#endregion

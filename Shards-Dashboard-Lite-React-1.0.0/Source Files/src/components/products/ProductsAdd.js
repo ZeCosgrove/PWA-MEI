@@ -6,22 +6,10 @@ import axios from "axios";
 
 import { toast } from "react-toastify";
 
-const CategoriesEdit = () => {
-  const [id, setCategoryId] = useState([]);
-
+const ProductsAdd = () => {
   const [name, setName] = useState([]);
 
-  useEffect(() => {
-    const parts = window.location.href.split("/");
-    var getId = parts[parts.length - 1];
-    setCategoryId(getId);
-
-    axios.get(`http://localhost:3000/api/v1/categories/${getId}`).then(res => {
-      setName(res.data.name);
-    });
-  }, []);
-
-  const handleEdit = async e => {
+  const handleCreate = async e => {
     e.preventDefault();
 
     const bodyParameters = {
@@ -29,12 +17,13 @@ const CategoriesEdit = () => {
     };
 
     try {
-      const res = await axios.patch(
-        `http://localhost:3000/api/v1/categories/${id}`,
+      const res = await axios.post(
+        `http://localhost:3000/api/v1/categories`,
         bodyParameters
       );
 
-      toast.success(`Categoria "${res.data.name}" editada com sucesso`);
+      toast.success(`Categoria "${res.data.name}" criada com sucesso`);
+      setName("");
     } catch (err) {
       console.log(err);
     }
@@ -50,7 +39,7 @@ const CategoriesEdit = () => {
         <Col>
           <Card small className="mb-4">
             <CardHeader className="border-bottom">
-              <h6 className="m-0">Editar Categoria</h6>
+              <h6 className="m-0">Adicionar Categoria</h6>
             </CardHeader>
             <CardBody className="p-0 pb-3">
               <div className="modal-body">
@@ -71,9 +60,9 @@ const CategoriesEdit = () => {
                     <button
                       type="submit"
                       className="btn btn-primary"
-                      onClick={handleEdit}
+                      onClick={handleCreate}
                     >
-                      Editar
+                      Adicionar
                     </button>
                   </div>
                 </div>
@@ -86,4 +75,4 @@ const CategoriesEdit = () => {
   );
 };
 
-export default CategoriesEdit;
+export default ProductsAdd;

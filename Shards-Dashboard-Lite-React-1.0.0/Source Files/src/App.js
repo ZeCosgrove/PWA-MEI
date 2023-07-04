@@ -17,6 +17,11 @@ import Categories from "./components/categories/Categories";
 import CategoriesEdit from "./components/categories/CategoriesEdit";
 import CategoriesAdd from "./components/categories/CategoriesAdd";
 import Products from "./components/products/Products";
+import Shops from "./components/shops/Shops";
+import ShopsAdd from "./components/shops/ShopsAdd";
+import ShopsEdit from "./components/shops/ShopsEdit";
+import ShopsInner from "./components/shops/ShopsInner";
+import ShopsInnerAdd from "./components/shops/ShopsInnerAdd";
 
 const App = () => {
   axios.interceptors.request.use(
@@ -130,6 +135,51 @@ const App = () => {
             element={
               <MainLayout>
                 <CategoriesAdd />
+              </MainLayout>
+            }
+          />
+          <Route
+            exact
+            path="/shops"
+            element={
+              <MainLayout>
+                <Shops />
+              </MainLayout>
+            }
+          />
+          <Route
+            exact
+            path="/shops/add"
+            element={
+              <MainLayout>
+                <ShopsAdd />
+              </MainLayout>
+            }
+          />
+          <Route
+            exact
+            path="/shops/:id"
+            element={
+              <MainLayout>
+                <ShopsEdit />
+              </MainLayout>
+            }
+          />
+          <Route
+            exact
+            path="/shops/inner/:id"
+            element={
+              <MainLayout>
+                <ShopsInner />
+              </MainLayout>
+            }
+          />
+          <Route
+            exact
+            path="/shops/inner/add/:id"
+            element={
+              <MainLayout>
+                <ShopsInnerAdd />
               </MainLayout>
             }
           />

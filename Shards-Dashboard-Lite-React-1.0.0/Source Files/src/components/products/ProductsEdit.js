@@ -6,10 +6,22 @@ import axios from "axios";
 
 import { toast } from "react-toastify";
 
-const CategoriesAdd = () => {
+const ProductsEdit = () => {
+  const [id, setCategoryId] = useState([]);
+
   const [name, setName] = useState([]);
 
-  const handleCreate = async e => {
+  useEffect(() => {
+    const parts = window.location.href.split("/");
+    var getId = parts[parts.length - 1];
+    setCategoryId(getId);
+
+    axios.get(`http://localhost:3000/api/v1/categories/${getId}`).then(res => {
+      setName(res.data.name);
+    });
+  }, []);
+
+  const handleEdit = async e => {
     e.preventDefault();
 
     const bodyParameters = {
@@ -17,13 +29,12 @@ const CategoriesAdd = () => {
     };
 
     try {
-      const res = await axios.post(
-        `http://localhost:3000/api/v1/categories`,
+      const res = await axios.patch(
+        `http://localhost:3000/api/v1/categories/${id}`,
         bodyParameters
       );
 
-      toast.success(`Categoria "${res.data.name}" criada com sucesso`);
-      setName("");
+      toast.success(`Categoria "${res.data.name}" editada com sucesso`);
     } catch (err) {
       console.log(err);
     }
@@ -39,7 +50,7 @@ const CategoriesAdd = () => {
         <Col>
           <Card small className="mb-4">
             <CardHeader className="border-bottom">
-              <h6 className="m-0">Adicionar Categoria</h6>
+              <h6 className="m-0">Editar Categoria</h6>
             </CardHeader>
             <CardBody className="p-0 pb-3">
               <div className="modal-body">
@@ -60,9 +71,9 @@ const CategoriesAdd = () => {
                     <button
                       type="submit"
                       className="btn btn-primary"
-                      onClick={handleCreate}
+                      onClick={handleEdit}
                     >
-                      Adicionar
+                      Editar
                     </button>
                   </div>
                 </div>
@@ -75,4 +86,4 @@ const CategoriesAdd = () => {
   );
 };
 
-export default CategoriesAdd;
+export default ProductsEdit;
