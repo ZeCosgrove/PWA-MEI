@@ -50,8 +50,6 @@ const Canvas = props => {
 
   useEffect(() => {
     if (props.layout != undefined) {
-      console.log(props.layout);
-
       let innerLayout = {
         upperLeft: [0, 0],
         bottonRigh: [100, 100]
@@ -91,9 +89,12 @@ const Canvas = props => {
       // outer(context, props.innerLayout);
       drawBorders(context, props.layout, thisScale);
 
-      props.layout.innerLayout.map(layout => {
-        drawInnerBorders(context, layout, thisScale);
-      });
+      console.log(props.layout.innerLayout === undefined);
+      if (props.layout.innerLayout === undefined) {
+        props.layout.innerLayout.map(layout => {
+          drawInnerBorders(context, layout, thisScale);
+        });
+      }
     }
   }, [drawBorders]);
 

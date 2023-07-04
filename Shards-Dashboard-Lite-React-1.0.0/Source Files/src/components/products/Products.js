@@ -18,6 +18,9 @@ import { toast } from "react-toastify";
 const Products = () => {
   const [refresh, isToRefresh] = useState(0);
   const [products, setProducts] = useState([]);
+  const [product, setProduct] = useState();
+  const [category, setCategory] = useState();
+  const [shop, setShop] = useState();
   const [page, setPage] = useState(0);
   const [pagination, setPagination] = useState({
     next: null,
@@ -32,8 +35,24 @@ const Products = () => {
   };
 
   useEffect(() => {
+    let filterProduct = new String();
+    let filterCategory = new String();
+    let filterShop = new String();
+
+    if (product != undefined && product != "") {
+      filterProduct = `&product=${product}`;
+    }
+    if (category != undefined && category != "") {
+      filterCategory = `&category=${category}`;
+    }
+    if (shop != undefined && shop != "") {
+      filterShop = `&shop=${shop}`;
+    }
+
     axios
-      .get(`http://localhost:3000/api/v1/products?page=${page}&perPage=5`)
+      .get(
+        `http://localhost:3000/api/v1/products?page=${page}&perPage=5${filterProduct}${filterCategory}${filterShop}`
+      )
       .then(response => {
         setProducts(response.data.object);
         setPagination({
@@ -45,7 +64,7 @@ const Products = () => {
       .catch(err => {
         console.log(err);
       });
-  }, [page, refresh]);
+  }, [page, refresh, product, category, shop]);
 
   const handleDelete = async e => {
     try {
@@ -114,6 +133,38 @@ const Products = () => {
           </Button>
         </div>
       </Row>
+      <div className="row">
+        <div className="col-md-3">
+          <input
+            class="navbar-search form-control"
+            type="text"
+            placeholder="Filtrar por Produto..."
+            aria-label="Search"
+            value={product}
+            onChange={e => setProduct(e.target.value)}
+          />
+        </div>
+        <div className="col-md-3">
+          <input
+            class="navbar-search form-control"
+            type="text"
+            placeholder="Filtrar por Categoria..."
+            aria-label="Search"
+            value={category}
+            onChange={e => setCategory(e.target.value)}
+          />
+        </div>
+        <div className="col-md-3">
+          <input
+            class="navbar-search form-control"
+            type="text"
+            placeholder="Filtrar por Loja..."
+            aria-label="Search"
+            value={shop}
+            onChange={e => setShop(e.target.value)}
+          />
+        </div>
+      </div>
 
       <Row>
         <Col>

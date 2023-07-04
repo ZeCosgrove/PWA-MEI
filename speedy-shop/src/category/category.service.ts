@@ -62,19 +62,22 @@ export class CategoryService {
       .findById(id)
       .exec();
 
+    console.log(category);
+
     const output = new GetCategoryOutput(category._id, category.name);
 
     return output;
   }
 
-  async getProductImage(id: string): Promise<Buffer>{
-    return this.categoryModel.findById(id).exec().then((res) => {
-      if(res !== undefined && res.image !== undefined){
-        return res.image;
-      } else
-        return null;
-      
-    });
+  async getProductImage(id: string): Promise<Buffer> {
+    return this.categoryModel
+      .findById(id)
+      .exec()
+      .then((res) => {
+        if (res !== undefined && res.image !== undefined) {
+          return res.image;
+        } else return null;
+      });
   }
 
   async createCategory(input: CreateCategoryDto): Promise<GetCategoryOutput> {
@@ -86,16 +89,17 @@ export class CategoryService {
     return output;
   }
 
-
-  async addCategoryImage(id: string, image: Express.Multer.File): Promise<Category>{
+  async addCategoryImage(
+    id: string,
+    image: Express.Multer.File,
+  ): Promise<Category> {
     var category = await this.categoryModel.findById(id).exec();
     if (!category) {
       return null;
     }
-    category.image = image.buffer
+    category.image = image.buffer;
 
     return category.save();
-
   }
 
   async updateCategory(id: string, input: UpdateCategoryDto) {
