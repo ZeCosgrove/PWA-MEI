@@ -8,6 +8,8 @@ import { Product } from 'src/product/schemas/product.schema';
 import { User } from 'src/user/schemas/user.schema';
 import { UpdateShoppingCartSystemStateDto } from './dto/update-shopping-cart-system-state.dto';
 import { UpdateShoppingCartProductsDto } from './dto/update-shopping-cart-products.dto';
+import { ShoppingCartSystemState } from './enums/shopping-cart-system-state.enum';
+import { CartProduct } from 'src/cart-product/schemas/cart-product.schema';
 
 @Injectable()
 export class ShoppingCartService {
@@ -32,18 +34,9 @@ export class ShoppingCartService {
       throw new Error('404 Not Found: User not found');
     }
 
-    const existingProducts = await Promise.all(
-      products.map(async (product) => {
-        const existingProduct = await this.productModel.findById(product);
-        if (!existingProduct) {
-          throw new Error(`404 Not Found: Product not found: ${product}`);
-        }
-        return existingProduct;
-      })
-    );
     const shoppingCart = new this.shoppingCartModel({
       user: userFounded,
-      products: existingProducts,
+      products: products,
       startDate: new Date(startDate),
       endDate: new Date(endDate),
       systemState: systemState,
@@ -94,13 +87,25 @@ export class ShoppingCartService {
    * @param userId the user identifier
    * @returns only the active shopping carts
    */
-  async getActiveShoppingCartByUser(userId: string) : Promise<ShoppingCart[]>{
+  async getActiveShoppingCartByUser(userId: string) : Promise<ShoppingCart>{
+    const shoppingCarts = await this.getShoppingCartByUser(userId);
+    const activeShoppingCarts = shoppingCarts.find(s => s.systemState == ShoppingCartSystemState.Active)
+  
+    return activeShoppingCarts;
+  }
+
+  /**
+   * This method returns the previous shops by User
+   * @param userId user identifier
+   * @returns a list of shopping carts closed
+   */
+  async getClosedShoppingCartByUser(userId : string) : Promise<ShoppingCart[]>{
     const allShoppingCarts = await this.getShoppingCartByUser(userId);
 
     const activeShoppingCarts = [];
     for (let i = 0; i < allShoppingCarts.length; i++) {
       const shoppingCart = allShoppingCarts[i];
-      if (shoppingCart.systemState == 1) {
+      if (shoppingCart.systemState == ShoppingCartSystemState.Terminated) {
         activeShoppingCarts.push(shoppingCart);
       }
     }
@@ -126,19 +131,9 @@ export class ShoppingCartService {
       throw new Error('404 Not Found: User not found');
     }
 
-    const existingProducts = await Promise.all(
-      products.map(async (product) => {
-        const existingProduct = await this.productModel.findById(product);
-        if (!existingProduct) {
-          throw new Error(`404 Not Found: Product not found: ${product}`);
-        }
-        return existingProduct;
-      }),
-    );
-
     const shoppingCartUpdated = (await this.shoppingCartModel.findByIdAndUpdate(id, {
       user: userFounded,
-      products: existingProducts,
+      products: products,
       startDate: new Date(startDate),
       endDate: new Date(endDate),
       systemState: systemState
@@ -153,9 +148,10 @@ export class ShoppingCartService {
    * @param shoppingCartId the id of shopping cart to update
    * @param systemState the new system state
    */
-  async updateShoppingCartSystemState(shoppingCartId: string, systemStateDto: UpdateShoppingCartSystemStateDto){
-    const shoppingCartUpdated = (await this.shoppingCartModel.findByIdAndUpdate(shoppingCartId, systemStateDto)).save();
-    return await shoppingCartUpdated;
+  async updateShoppingCartSystemState(shoppingCartId: string, systemStateDto: UpdateShoppingCartSystemStateDto): Promise <ShoppingCart>{
+    const shoppingCartUpdated = await this.shoppingCartModel.findById(shoppingCartId).exec();
+    shoppingCartUpdated.systemState = systemStateDto.systemState;
+    return await shoppingCartUpdated.save();
   }
 
   /**
@@ -168,15 +164,30 @@ export class ShoppingCartService {
     const shoppingCart = await this.getShoppingCartById(shoppingCartId);
     if (!shoppingCart) return null;
 
-    const products = []
-    for (let id = 0; id < productsDto.products.length; id++) {
-      const productId = productsDto.products[id];
-      const product = await this.productModel.findById(productId)
-      if (!product) return null;
-      products.push(product);
+    const {productId, quantity, discount} = productsDto 
+    const product = await this.productModel.findById(productId).exec()
+    if (!product) {
+      return null
     }
+    const existingCartProduct = shoppingCart.products.find(p => p.product._id == productId);
+    if (!existingCartProduct) {
+      const cartProduct = {
+        product : product,
+        quantity : quantity,
+        discount : discount
+      }
+      console.log("added")
+      shoppingCart.products.push(cartProduct as CartProduct)
+    }else{
+      console.log("update")
+      var cartProduct = shoppingCart.products.find(p => p.product._id == productId)
+      const index = shoppingCart.products.indexOf(cartProduct)
+      cartProduct.quantity = quantity
+      cartProduct.discount = discount
 
-    shoppingCart.products = products;
+      shoppingCart.products[index] = cartProduct
+    }
+    
     
     return await shoppingCart.save();
   }
