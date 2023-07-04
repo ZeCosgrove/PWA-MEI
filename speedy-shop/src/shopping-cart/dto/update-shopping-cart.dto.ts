@@ -2,19 +2,20 @@ import { PartialType } from '@nestjs/mapped-types';
 import { CreateShoppingCartDto } from './create-shopping-cart.dto';
 import { IsArray, IsEnum, IsString } from 'class-validator';
 import { ShoppingCartSystemState } from '../enums/shopping-cart-system-state.enum';
+import { CartProduct } from 'src/cart-product/schemas/cart-product.schema';
 
 export class UpdateShoppingCartDto extends PartialType(CreateShoppingCartDto) {
     @IsString()
-    user: String
+    user: string
 
     @IsArray()
-    products: Array<String>
+    products?: Array<CartProduct>
 
     @IsString()
-    startDate: Date
+    startDate: string
 
     @IsString()
-    endDate?: Date
+    endDate?: string
 
     @IsEnum(ShoppingCartSystemState)
     systemState : ShoppingCartSystemState

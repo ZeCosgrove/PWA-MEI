@@ -53,6 +53,15 @@ export class ShoppingCartController {
     return this.shoppingCartService.getActiveShoppingCartByUser(id);
   }
 
+  @Get('user-ended/:id')
+  @HttpCode(200)
+  @UseGuards(AuthGuard)
+  @Roles(UserRole.Admin, UserRole.Staff, UserRole.Client)
+  getClosedShoppingCartsByUser(@Param('id') id: string)
+  {
+    return this.shoppingCartService.getClosedShoppingCartByUser(id);
+  }
+
   @Patch(':id')
   @HttpCode(200)
   @UseGuards(AuthGuard)
