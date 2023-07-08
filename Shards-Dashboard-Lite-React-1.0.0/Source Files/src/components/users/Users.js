@@ -17,6 +17,7 @@ import Pagination from "../pagination/Pagination";
 import { toast } from "react-toastify";
 
 const Users = () => {
+  const [refresh, setRefresh] = useState(0);
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(0);
   const [pagination, setPagination] = useState({
@@ -26,6 +27,13 @@ const Users = () => {
   });
   const isAuthenticated = useIsAuthenticated();
   const navigate = useNavigate();
+
+  const UserSystemState = {
+    0: "Criado",
+    1: "Ativo",
+    2: "Inativo",
+    3: "Eliminado"
+  };
 
   const handleCounterChange = newCounter => {
     setPage(page + newCounter);
@@ -49,7 +57,7 @@ const Users = () => {
       .catch(err => {
         console.log(err);
       });
-  }, [page]);
+  }, [page, refresh]);
 
   const handleDelete = async e => {
     try {
@@ -58,6 +66,7 @@ const Users = () => {
       );
 
       toast.success(`Utilizador "${res.data.name}" eliminado com sucesso`);
+      setRefresh(refresh + 1);
     } catch (err) {
       console.log(err);
     }
@@ -67,17 +76,43 @@ const Users = () => {
     navigate(`/users/${e.target.id}`);
   };
 
+  const handleActivate = async e => {
+    try {
+      const res = await axios.patch(
+        `http://localhost:3000/api/v1/users/systemState/update/${e.target.id}`,
+        { systemState: 1 }
+      );
+
+      toast.success(`Utilizador "${res.data.name}" ativado com sucesso`);
+      setRefresh(refresh + 1);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const DisplayData = users.map(info => {
     return (
       <tr key={info._id}>
         <td>{info._id}</td>
         <td>{info.name}</td>
         <td>{info.email}</td>
+        <td>{UserSystemState[info.systemState]}</td>
         <td>
           <Button
             className="mb-2 mr-1 btn-secondary"
             id={info._id}
+            onClick={handleActivate}
+            disabled={info.systemState === 1}
+          >
+            Ativar
+          </Button>
+        </td>
+        <td>
+          <Button
+            className="mb-2 mr-1 btn-third"
+            id={info._id}
             onClick={handleEdit}
+            disabled={info.systemState !== 1}
           >
             Editar
           </Button>
@@ -87,6 +122,7 @@ const Users = () => {
             className="mb-2 mr-1 btn-primary"
             id={info._id}
             onClick={handleDelete}
+            disabled={info.systemState !== 1}
           >
             Eliminar
           </Button>
@@ -119,6 +155,12 @@ const Users = () => {
                     </th>
                     <th scope="col" className="border-0">
                       Email
+                    </th>
+                    <th scope="col" className="border-0">
+                      Estado no Sistema
+                    </th>
+                    <th scope="col" className="border-0">
+                      Ativar
                     </th>
                     <th scope="col" className="border-0">
                       Editar

@@ -12,6 +12,8 @@ import { InnerLayout } from './entities/inner-layout.entity';
 import { UpdateShopLayoutSystemStateDto } from './dto/update-shop-layout-system-state.dto';
 import { CoordinatesInputDto } from './dto/coordinates-input.dto';
 import { Pagination } from 'src/pagination/interface/pagination.interface';
+import { getCityByCoordinates } from './utils/shop-layout.utils';
+import { CreateShopLayoutDto } from './dto/create-shop-layout.dto';
 
 @Injectable()
 export class ShopLayoutService {
@@ -19,7 +21,7 @@ export class ShopLayoutService {
     @InjectModel(ShopLayout.name) private shopModel: Model<ShopLayout>,
   ) {}
 
-  async createShopFloor(input: ShopLayout): Promise<GetShopLayoutOutput> {
+  async createShopFloor(input: CreateShopLayoutDto) {
     input.layout.innerLayout = new Array();
 
     const createdShop: ShopLayout = new this.shopModel(input);
@@ -93,11 +95,17 @@ export class ShopLayoutService {
   async getShopFloorById(id: string) {
     const shop: ShopLayout = await this.shopModel.findById(id).exec();
 
+    const city = await getCityByCoordinates(
+      shop.realWorldCoordinates[0],
+      shop.realWorldCoordinates[1],
+    );
+
     const output = new GetShopLayoutOutput(
       shop._id,
       shop.name,
       shop.layout,
       shop.realWorldCoordinates,
+      city,
     );
 
     return output;

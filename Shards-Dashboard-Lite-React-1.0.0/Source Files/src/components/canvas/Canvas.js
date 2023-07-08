@@ -89,8 +89,7 @@ const Canvas = props => {
       // outer(context, props.innerLayout);
       drawBorders(context, props.layout, thisScale);
 
-      console.log(props.layout.innerLayout === undefined);
-      if (props.layout.innerLayout === undefined) {
+      if (props.layout.innerLayout !== undefined) {
         props.layout.innerLayout.map(layout => {
           drawInnerBorders(context, layout, thisScale);
         });

@@ -240,15 +240,17 @@ export class ProductService {
   async changeProduct(id: string, updateProductDto: UpdateProductDto) {
     // check if the category exists
     const categoryFinded = await this.categoryModel
-      .findById(updateProductDto.category)
+      .findOne({ name: updateProductDto.category })
       .exec();
     if (!categoryFinded) {
       return null;
     }
 
-    // Ceck if the shop exists
+    console.log(categoryFinded._id);
+
+    // check if the shop exists
     const shopFinded = await this.shopModel
-      .findById(updateProductDto.shop)
+      .findOne({ name: updateProductDto.shop })
       .exec();
     if (!shopFinded) {
       return null;
@@ -267,6 +269,8 @@ export class ProductService {
         systemState: updateProductDto.systemState,
       })
     ).save();
+
+    console.log(updatedProduct);
 
     // return the product updated
     return await updatedProduct;

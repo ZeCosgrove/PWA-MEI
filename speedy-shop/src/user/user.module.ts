@@ -4,7 +4,7 @@ import { UserController } from './user.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 
-import {User, UserSchema} from './schemas/user.schema';
+import { User, UserSchema } from './schemas/user.schema';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './auth/roles.guard';
 
@@ -15,15 +15,15 @@ import { RolesGuard } from './auth/roles.guard';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
-    }
+    },
   ],
-  imports: [MongooseModule.forFeature([
-    { name: User.name, schema: UserSchema }
-  ]), 
-  JwtModule.register({
-    global: true,
-    secret: "asasd", //process.env.SECRET,
-    signOptions: { expiresIn: '3600s' },
-  })]
+  imports: [
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    JwtModule.register({
+      global: true,
+      secret: 'asasd', //process.env.SECRET,
+      signOptions: { expiresIn: '3600s' },
+    }),
+  ],
 })
 export class UserModule {}

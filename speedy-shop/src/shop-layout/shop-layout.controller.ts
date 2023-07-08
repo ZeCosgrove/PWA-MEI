@@ -17,6 +17,7 @@ import { CoordinatesInputDto } from './dto/coordinates-input.dto';
 import { AuthGuard } from 'src/user/auth/auth.guard';
 import { Roles } from 'src/user/auth/roles.decorator';
 import { UserRole } from 'src/user/enums/user-role.enum';
+import { CreateShopLayoutDto } from './dto/create-shop-layout.dto';
 
 @Controller('api/v1/shop-layouts')
 export class ShopLayoutController {
@@ -25,7 +26,8 @@ export class ShopLayoutController {
   @Post()
   @UseGuards(AuthGuard)
   @Roles(UserRole.Admin)
-  createShopFloor(@Body() createShopLayoutDto: ShopLayout) {
+  createShopFloor(@Body() createShopLayoutDto: CreateShopLayoutDto) {
+    console.log();
     return this.shopLayoutService.createShopFloor(createShopLayoutDto);
   }
 

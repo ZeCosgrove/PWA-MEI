@@ -42,17 +42,22 @@ export class UserService {
 
     if (page != undefined && perPage != undefined && +perPage > 0) {
       users = await this.userModel
-        .find(filter)
+        .find()
         .skip(+perPage * +page)
         .limit(+perPage);
     } else {
-      users = await this.userModel.find(filter).exec();
+      users = await this.userModel.find().exec();
     }
 
     var output: GetUserOutput[] = new Array();
 
     users.forEach(async (user) => {
-      const singleUser = new GetUserOutput(user._id, user.name, user.email);
+      const singleUser = new GetUserOutput(
+        user._id,
+        user.name,
+        user.email,
+        user.systemState,
+      );
       output.push(singleUser);
     });
 
@@ -64,7 +69,7 @@ export class UserService {
         +page - 1
       }&perPage=${+perPage}`;
     }
-    if (+perPage * +page + +perPage < (await this.userModel.count(filter))) {
+    if (+perPage * +page + +perPage < (await this.userModel.count())) {
       next = `http://localhost:3000/api/v1/users?page=${
         +page + 1
       }&perPage=${+perPage}`;
@@ -243,7 +248,7 @@ export class UserService {
     throw new ForbiddenException('Email not found!');
   }
 
-  async changePassword(input: ChangePasswordInputDto): Promise<GetUserOutput> {
+  async changePassword(input: ChangePasswordInputDto) {
     const user: User = await this.userModel
       .findOne({ email: input.email, password: input.oldPassword })
       .exec();
