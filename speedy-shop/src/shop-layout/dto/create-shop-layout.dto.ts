@@ -1,17 +1,26 @@
-import {  
-    IsArray, IsObject, IsString
+import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  IsArray,
+  IsObject,
+  IsString,
 } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 import { Layout } from '../entities/layout.entity';
 
 export class CreateShopLayoutDto {
+  @ApiProperty()
+  @IsString()
+  name: string;
 
-    @IsString()
-    name: string
+  @ApiProperty()
+  @IsObject()
+  layout: Layout;
 
-    @IsObject()
-    layout: Layout
-
-    @IsArray()
-    realWorldCoordinates: [number, number]
+  @ApiProperty()
+  @IsArray()
+  @ArrayMinSize(2)
+  @ArrayMaxSize(2)
+  realWorldCoordinates: [];
 }

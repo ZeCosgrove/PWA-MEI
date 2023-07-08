@@ -1,9 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { HelpService } from './help.service';
 import { CreateHelpDto } from './dto/create-help.dto';
 import { UpdateHelpDto } from './dto/update-help.dto';
 
-@Controller('help')
+@Controller('api/v1/helps')
 export class HelpController {
   constructor(private readonly helpService: HelpService) {}
 

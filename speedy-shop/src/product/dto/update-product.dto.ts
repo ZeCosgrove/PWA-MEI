@@ -1,37 +1,39 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateProductDto } from './create-product.dto';
-import {  
-    IsNumber,
-    IsString,
-    IsEnum,
-
-} from 'class-validator';
+import { IsNumber, IsString, IsEnum } from 'class-validator';
 import { ProductSystemState } from '../enums/product-system-state.enum';
-
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {
+  @ApiProperty()
+  @IsString()
+  name: string;
 
-    @IsString()
-    name: string
+  @ApiProperty()
+  @IsString()
+  description: string;
 
-    @IsString()
-    description: string
+  @ApiProperty()
+  @IsNumber()
+  price: number;
 
-    @IsNumber()
-    price: number
+  @ApiProperty()
+  @IsNumber()
+  quantity: number;
 
-    @IsNumber()
-    quantity: number
+  @ApiProperty()
+  @IsString()
+  category: string;
 
-    @IsString()
-    category: string
+  @ApiProperty()
+  @IsNumber()
+  location: number;
 
-    @IsNumber()
-    location: number
+  @ApiProperty()
+  @IsString()
+  shop: string;
 
-    @IsString()
-    shop: string;
-
-    @IsEnum(ProductSystemState)
-    systemState: ProductSystemState
+  @ApiProperty()
+  @IsEnum(ProductSystemState)
+  systemState: ProductSystemState;
 }

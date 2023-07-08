@@ -12,7 +12,6 @@ import { ShopLayoutService } from './shop-layout.service';
 import { UpdateShopLayoutDto } from './dto/update-shop-layout.dto';
 import { UpdateShopLayoutSystemStateDto } from './dto/update-shop-layout-system-state.dto';
 import { InnerLayout } from './entities/inner-layout.entity';
-import { ShopLayout } from './schemas/shopping-layout.schema';
 import { CoordinatesInputDto } from './dto/coordinates-input.dto';
 import { AuthGuard } from 'src/user/auth/auth.guard';
 import { Roles } from 'src/user/auth/roles.decorator';

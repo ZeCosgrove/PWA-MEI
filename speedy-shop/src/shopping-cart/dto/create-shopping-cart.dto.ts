@@ -1,21 +1,25 @@
-import { IsArray, IsDate, IsEnum, IsNumber, IsString } from "class-validator";
-import { ShoppingCartSystemState } from "../enums/shopping-cart-system-state.enum";
-import { User } from "src/user/entities/user.entity";
-import { Product } from "src/product/schemas/product.schema";
+import { IsArray, IsDate, IsEnum, IsNumber, IsString } from 'class-validator';
+import { ShoppingCartSystemState } from '../enums/shopping-cart-system-state.enum';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateShoppingCartDto {
-    @IsString()
-    user: String
+  @ApiProperty()
+  @IsString()
+  user: String;
 
-    @IsArray()
-    products?: Array<String>
+  @ApiProperty()
+  @IsArray()
+  products?: Array<String>;
 
-    @IsString()
-    startDate: Date
+  @ApiProperty()
+  @IsString()
+  startDate: Date;
 
-    @IsString()
-    endDate?: Date
+  @ApiProperty()
+  @IsString()
+  endDate?: Date;
 
-    @IsEnum(ShoppingCartSystemState)
-    systemState : ShoppingCartSystemState
+  @ApiProperty()
+  @IsEnum(ShoppingCartSystemState)
+  systemState: ShoppingCartSystemState;
 }

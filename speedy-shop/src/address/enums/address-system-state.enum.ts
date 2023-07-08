@@ -1,5 +1,5 @@
 export enum AddressSystemState {
-    Main,
-    Active,
-    Terminated
+  Main = 0,
+  Active = 1,
+  Terminated = 2,
 }
