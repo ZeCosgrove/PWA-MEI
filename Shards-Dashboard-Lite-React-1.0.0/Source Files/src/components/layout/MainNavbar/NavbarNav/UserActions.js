@@ -1,5 +1,6 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useSignOut } from "react-auth-kit";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Dropdown,
   DropdownToggle,
@@ -10,50 +11,40 @@ import {
   NavLink
 } from "shards-react";
 
-export default class UserActions extends React.Component {
-  constructor(props) {
-    super(props);
+const UserActions = () => {
+  const [visible, setVisible] = useState(false);
+  const signOut = useSignOut();
+  const navigate = useNavigate();
 
-    this.state = {
-      visible: false
-    };
+  const toggleUserActions = () => {
+    setVisible(!visible);
+  };
 
-    this.toggleUserActions = this.toggleUserActions.bind(this);
-  }
+  const handleLogout = () => {
+    signOut();
+    navigate("/login");
+  };
 
-  toggleUserActions() {
-    this.setState({
-      visible: !this.state.visible
-    });
-  }
+  return (
+    <NavItem tag={Dropdown} caret toggle={toggleUserActions}>
+      <DropdownToggle caret tag={NavLink} className="text-nowrap px-3">
+        <span className="d-none d-md-inline-block">
+          {JSON.parse(localStorage.getItem("_auth_state")).name}
+        </span>
+      </DropdownToggle>
+      <Collapse tag={DropdownMenu} right small open={visible}>
+        <DropdownItem divider />
+        <DropdownItem
+          tag={Link}
+          // to="/login"
+          className="text-danger"
+          onClick={handleLogout}
+        >
+          <i className="material-icons text-danger">&#xE879;</i> Terminar Sessão
+        </DropdownItem>
+      </Collapse>
+    </NavItem>
+  );
+};
 
-  render() {
-    return (
-      <NavItem tag={Dropdown} caret toggle={this.toggleUserActions}>
-        <DropdownToggle caret tag={NavLink} className="text-nowrap px-3">
-          <span className="d-none d-md-inline-block">
-            {JSON.parse(localStorage.getItem("_auth_state")).name}
-          </span>
-        </DropdownToggle>
-        <Collapse tag={DropdownMenu} right small open={this.state.visible}>
-          <DropdownItem tag={Link} to="user-profile">
-            <i className="material-icons">&#xE7FD;</i> Profile
-          </DropdownItem>
-          <DropdownItem tag={Link} to="edit-user-profile">
-            <i className="material-icons">&#xE8B8;</i> Edit Profile
-          </DropdownItem>
-          <DropdownItem tag={Link} to="file-manager-list">
-            <i className="material-icons">&#xE2C7;</i> Files
-          </DropdownItem>
-          <DropdownItem tag={Link} to="transaction-history">
-            <i className="material-icons">&#xE896;</i> Transactions
-          </DropdownItem>
-          <DropdownItem divider />
-          <DropdownItem tag={Link} to="/login" className="text-danger">
-            <i className="material-icons text-danger">&#xE879;</i> Logout
-          </DropdownItem>
-        </Collapse>
-      </NavItem>
-    );
-  }
-}
+export default UserActions;

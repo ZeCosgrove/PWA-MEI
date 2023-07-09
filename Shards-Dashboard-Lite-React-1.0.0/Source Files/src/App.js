@@ -22,15 +22,14 @@ import ShopsAdd from "./components/shops/ShopsAdd";
 import ShopsEdit from "./components/shops/ShopsEdit";
 import ShopsInner from "./components/shops/ShopsInner";
 import ShopsInnerAdd from "./components/shops/ShopsInnerAdd";
+import ProductsEdit from "./components/products/ProductsEdit";
+import ProductsAdd from "./components/products/ProductsAdd";
 
 const App = () => {
   axios.interceptors.request.use(
     function(config) {
       const token = `Bearer ${localStorage.getItem("_auth")}`;
-
       config.headers.Authorization = token;
-      console.log(config.headers.Authorization);
-
       return config;
     },
     function(error) {
@@ -46,7 +45,6 @@ const App = () => {
       if (error.response.status === 403) {
         window.location.href = "/login";
       }
-      console.log(error);
       toast.error(error.response.data.message);
       return Promise.reject(error);
     }
@@ -125,7 +123,7 @@ const App = () => {
             path="/products/:id"
             element={
               <MainLayout>
-                <CategoriesEdit />
+                <ProductsEdit />
               </MainLayout>
             }
           />
@@ -134,7 +132,7 @@ const App = () => {
             path="/products/add"
             element={
               <MainLayout>
-                <CategoriesAdd />
+                <ProductsAdd />
               </MainLayout>
             }
           />

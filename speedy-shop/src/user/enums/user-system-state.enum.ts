@@ -1,6 +1,6 @@
 export enum UserSystemState {
-    Created, //Created but not yet validated
-    Active, //Created and validated
-    Inactive, //Has been inactive for some time
-    Terminated //Has deleted its account
+  Created = 0, //Created but not yet validated
+  Active = 1, //Created and validated
+  Inactive = 2, //Has been inactive for some time
+  Terminated = 3, //Has deleted its account
 }

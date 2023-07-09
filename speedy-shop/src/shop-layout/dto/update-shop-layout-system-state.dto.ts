@@ -1,8 +1,9 @@
-import { IsEnum, } from 'class-validator';
+import { IsEnum } from 'class-validator';
 import { ShopLayoutSystemState } from '../enums/shop-layout-system-state.enum';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateShopLayoutSystemStateDto {
-
-    @IsEnum(ShopLayoutSystemState)
-    systemState: ShopLayoutSystemState
+  @ApiProperty()
+  @IsEnum(ShopLayoutSystemState)
+  systemState: ShopLayoutSystemState;
 }

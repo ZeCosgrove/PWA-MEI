@@ -38,7 +38,8 @@ const Login = () => {
         tokenType: "Bearer",
         authState: {
           email: res.data.email,
-          id: res.data._id
+          id: res.data._id,
+          name: res.data.name
         }
       });
 

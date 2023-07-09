@@ -1,9 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { CartProductService } from './cart-product.service';
 import { CreateCartProductDto } from './dto/create-cart-product.dto';
 import { UpdateCartProductDto } from './dto/update-cart-product.dto';
 
-@Controller('cart-product')
+@Controller('api/v1/cart-products')
 export class CartProductController {
   constructor(private readonly cartProductService: CartProductService) {}
 
@@ -23,7 +31,10 @@ export class CartProductController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCartProductDto: UpdateCartProductDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateCartProductDto: UpdateCartProductDto,
+  ) {
     return this.cartProductService.update(+id, updateCartProductDto);
   }
 

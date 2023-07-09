@@ -19,6 +19,7 @@ import { ChangePasswordInputDto } from './dto/change-password-input.dto';
 import { AuthGuard } from './auth/auth.guard';
 import { Roles } from './auth/roles.decorator';
 import { UserRole } from './enums/user-role.enum';
+import { ApiBody } from '@nestjs/swagger';
 
 @Controller('api/v1/users')
 export class UserController {
@@ -60,6 +61,7 @@ export class UserController {
   }
 
   @Post('register')
+  @ApiBody({ type: CreateUserInputDto })
   registerUser(@Body() createUserDto: CreateUserInputDto) {
     return this.userService.registerUser(createUserDto);
   }

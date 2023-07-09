@@ -19,7 +19,7 @@ import Canvas from "../canvas/Canvas";
 const ShopsInner = () => {
   const [refresh, isToRefresh] = useState(0);
   const [id, setShopID] = useState([]);
-  const [innerShop, setInnerShop] = useState([]);
+  const [innerShop, setInnerShop] = useState(undefined);
   const [shop, setShop] = useState();
 
   const navigate = useNavigate();
@@ -66,7 +66,10 @@ const ShopsInner = () => {
 
   let DisplayData = "Sem dados para apresentar";
 
-  if (innerShop != undefined) {
+  console.log("Here: " + innerShop + ".END.");
+  console.log(innerShop !== undefined);
+
+  if (innerShop !== undefined) {
     DisplayData = innerShop.map(shop => {
       return (
         <p>

@@ -1,7 +1,8 @@
-import { IsEmail } from "class-validator";
+import { IsEmail } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class RecoverPasswordInputDto {
-
-    @IsEmail()
-    email: string
+  @ApiProperty()
+  @IsEmail()
+  email: string;
 }

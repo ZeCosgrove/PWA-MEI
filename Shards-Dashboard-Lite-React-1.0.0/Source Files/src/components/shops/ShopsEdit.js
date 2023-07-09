@@ -13,6 +13,7 @@ const ShopsEdit = () => {
   const [longitude, setLongitude] = useState();
   const [length, setLength] = useState();
   const [width, setWidth] = useState();
+  const [city, setCity] = useState();
 
   useEffect(() => {
     const parts = window.location.href.split("/");
@@ -27,6 +28,7 @@ const ShopsEdit = () => {
         setLongitude(res.data.realWorldCoordinates[1]);
         setLength(res.data.layout.bottonRigh[0]);
         setWidth(res.data.layout.bottonRigh[1]);
+        setCity(res.data.city);
       });
   }, []);
 
@@ -104,9 +106,20 @@ const ShopsEdit = () => {
                       />
                     </div>
                   </div>
-                  <div className="col-md-3">
+                  <div className="col-md-2">
                     <div className="form-group">
                       <label>Comprimento</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={width}
+                        onChange={e => setWidth(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-2">
+                    <div className="form-group">
+                      <label>Largura</label>
                       <input
                         type="text"
                         className="form-control"
@@ -115,14 +128,14 @@ const ShopsEdit = () => {
                       />
                     </div>
                   </div>
-                  <div className="col-md-3">
+                  <div className="col-md-2">
                     <div className="form-group">
-                      <label>Largura</label>
+                      <label>Cidade</label>
                       <input
                         type="text"
                         className="form-control"
-                        value={width}
-                        onChange={e => setWidth(e.target.value)}
+                        value={city}
+                        disabled
                       />
                     </div>
                   </div>

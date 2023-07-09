@@ -1,41 +1,48 @@
-import {  
-    IsPositive,
-    Length,
-    IsNumber,
-    IsString,
-    IsEnum,
-
+import {
+  IsPositive,
+  Length,
+  IsNumber,
+  IsString,
+  IsEnum,
+  Min,
 } from 'class-validator';
 import { ProductSystemState } from '../enums/product-system-state.enum';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateProductDto {
+  @ApiProperty()
+  @Length(0, 20)
+  @IsString()
+  name: string;
 
-    @Length(0, 20)
-    @IsString()
-    name: string
+  @ApiProperty()
+  @IsString()
+  @Length(0, 50)
+  description: string;
 
-    @IsString()
-    @Length(0, 50)
-    description: string
+  @ApiProperty()
+  @IsPositive()
+  @IsNumber()
+  price: number;
 
-    @IsPositive()
-    @IsNumber()
-    price: number
+  @ApiProperty()
+  @IsNumber()
+  @Min(0)
+  quantity: number;
 
-    @IsPositive()
-    @IsNumber()
-    quantity: number
+  @ApiProperty()
+  @IsString()
+  category: string;
 
-    @IsString()
-    category: string
+  @ApiProperty()
+  @IsNumber()
+  location: number;
 
-    @IsPositive()
-    @IsNumber()
-    location: number
+  @ApiProperty()
+  @IsString()
+  shop: string; // shop Id
 
-    @IsString()
-    shop: string // shop Id
-
-    @IsEnum(ProductSystemState)
-    systemState : ProductSystemState
+  @ApiProperty()
+  @IsEnum(ProductSystemState)
+  systemState: ProductSystemState;
 }

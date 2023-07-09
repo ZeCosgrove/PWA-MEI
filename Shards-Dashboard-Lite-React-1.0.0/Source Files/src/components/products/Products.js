@@ -14,6 +14,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../pagination/Pagination";
 import { toast } from "react-toastify";
+import ImageDisplayer from "../imageDisplayer/ImageDisplayer";
 
 const Products = () => {
   const [refresh, isToRefresh] = useState(0);
@@ -90,7 +91,12 @@ const Products = () => {
   const DisplayData = products.map(info => {
     return (
       <tr key={info._id}>
-        <td>{info._id}</td>
+        {/* <td>{info._id}</td> */}
+        <td className="d-flex justify-content-center">
+          {info.image && info.image.data && (
+            <ImageDisplayer imageData={info.image.data} height={55} />
+          )}
+        </td>
         <td>{info.name}</td>
         <td>{info.price}</td>
         <td>{info.quantity}</td>
@@ -175,7 +181,7 @@ const Products = () => {
                 <thead className="bg-light">
                   <tr>
                     <th scope="col" className="border-0">
-                      #
+                      Img
                     </th>
                     <th scope="col" className="border-0">
                       Nome
