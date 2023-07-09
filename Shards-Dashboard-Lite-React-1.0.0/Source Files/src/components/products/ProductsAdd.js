@@ -137,7 +137,7 @@ const ProductsAdd = () => {
                           setCategory(e.target.value);
                         }}
                       >
-                        <option value="">Select uma categoria</option>
+                        <option value="">Selecione uma categoria</option>
                         {loadCategory.map(option => (
                           <option key={option._id} value={option._id}>
                             {option.name}
@@ -152,7 +152,6 @@ const ProductsAdd = () => {
                       <select
                         className="form-control"
                         onChange={handleShopChange}
-                        // value={shop}
                       >
                         <option value="">Selecione uma Loja</option>
                         {loadShop.map(shop => (

@@ -29,6 +29,9 @@ const Products = () => {
     page: 0
   });
 
+  const [loadCategory, setLoadCategory] = useState([]);
+  const [loadShop, setLoadShop] = useState([]);
+
   const navigate = useNavigate();
 
   const handleCounterChange = newCounter => {
@@ -36,6 +39,18 @@ const Products = () => {
   };
 
   useEffect(() => {
+    const getCategorys = async () => {
+      const res = await axios.get(`http://localhost:3000/api/v1/categories`);
+      setLoadCategory(res.data.object);
+    };
+    const getShops = async () => {
+      const res = await axios.get(`http://localhost:3000/api/v1/shop-layouts`);
+      setLoadShop(res.data.object);
+    };
+
+    getCategorys();
+    getShops();
+
     let filterProduct = new String();
     let filterCategory = new String();
     let filterShop = new String();
@@ -61,6 +76,7 @@ const Products = () => {
           previous: response.data.previous,
           page: page
         });
+        console.log("Highlight: " + response.data.highlight);
       })
       .catch(err => {
         console.log(err);
@@ -88,11 +104,37 @@ const Products = () => {
     navigate(`/products/add`);
   };
 
+  const handleChangeChecked = async productId => {
+    const newProducts = products.map(product => {
+      if (product._id === productId) {
+        return {
+          ...product,
+          highlight: !product.highlight // Toggle the highlight property
+        };
+      }
+      return product;
+    });
+
+    try {
+      await axios.patch(
+        `http://localhost:3000/api/v1/products/changeHighlight/${productId}`,
+        {
+          highlight: newProducts.find(product => product._id === productId)
+            .highlight
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+
+    setProducts(newProducts);
+  };
+
   const DisplayData = products.map(info => {
     return (
       <tr key={info._id}>
         {/* <td>{info._id}</td> */}
-        <td className="d-flex justify-content-center">
+        <td className="d-flex justify-content-center" height={80}>
           {info.image && info.image.data && (
             <ImageDisplayer imageData={info.image.data} height={55} />
           )}
@@ -102,6 +144,19 @@ const Products = () => {
         <td>{info.quantity}</td>
         <td>{info.category.name}</td>
         <td>{info.shop.name}</td>
+        <td>
+          <div class="form-check form-switch d-flex justify-content-center">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              checked={info.highlight}
+              value={info.highlight}
+              id={info._id}
+              // onChange={handleChangeHighlight}
+              onChange={() => handleChangeChecked(info._id)}
+            />
+          </div>
+        </td>
         <td>
           <Button
             className="mb-2 mr-1 btn-secondary"
@@ -142,33 +197,54 @@ const Products = () => {
       <div className="row">
         <div className="col-md-3">
           <input
-            class="navbar-search form-control"
+            class="form-control"
             type="text"
             placeholder="Filtrar por Produto..."
-            aria-label="Search"
             value={product}
-            onChange={e => setProduct(e.target.value)}
+            onChange={e => {
+              setProduct(e.target.value);
+              setPage(0);
+            }}
           />
         </div>
+
         <div className="col-md-3">
-          <input
-            class="navbar-search form-control"
-            type="text"
-            placeholder="Filtrar por Categoria..."
-            aria-label="Search"
-            value={category}
-            onChange={e => setCategory(e.target.value)}
-          />
+          <div className="form-group">
+            <select
+              className="form-control"
+              value={category}
+              onChange={e => {
+                setCategory(e.target.value);
+                setPage(0);
+              }}
+            >
+              <option value="">Filtrar por Categoria...</option>
+              {loadCategory.map(option => (
+                <option key={option._id} value={option.name}>
+                  {option.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
         <div className="col-md-3">
-          <input
-            class="navbar-search form-control"
-            type="text"
-            placeholder="Filtrar por Loja..."
-            aria-label="Search"
-            value={shop}
-            onChange={e => setShop(e.target.value)}
-          />
+          <div className="form-group">
+            <select
+              className="form-control"
+              value={shop}
+              onChange={e => {
+                setShop(e.target.value);
+                setPage(0);
+              }}
+            >
+              <option value="">Filtrar por Loja...</option>
+              {loadShop.map(option => (
+                <option key={option._id} value={option.name}>
+                  {option.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
@@ -197,6 +273,9 @@ const Products = () => {
                     </th>
                     <th scope="col" className="border-0">
                       Loja
+                    </th>
+                    <th scope="col" className="border-0">
+                      Destaque?
                     </th>
                     <th scope="col" className="border-0">
                       Editar

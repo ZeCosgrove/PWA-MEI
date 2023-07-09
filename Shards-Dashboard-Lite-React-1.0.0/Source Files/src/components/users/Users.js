@@ -93,7 +93,6 @@ const Users = () => {
   const DisplayData = users.map(info => {
     return (
       <tr key={info._id}>
-        <td>{info._id}</td>
         <td>{info.name}</td>
         <td>{info.email}</td>
         <td>{UserSystemState[info.systemState]}</td>
@@ -147,9 +146,6 @@ const Users = () => {
               <table className="table mb-0">
                 <thead className="bg-light">
                   <tr>
-                    <th scope="col" className="border-0">
-                      #
-                    </th>
                     <th scope="col" className="border-0">
                       Nome
                     </th>
