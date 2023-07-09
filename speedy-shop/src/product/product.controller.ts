@@ -13,7 +13,7 @@ import {
   UploadedFile,
   Res,
   ParseFilePipe,
-  FileTypeValidator,
+  FileTypeValidator
 } from '@nestjs/common';
 
 import { ProductService } from './product.service';
