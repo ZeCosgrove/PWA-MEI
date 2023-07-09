@@ -10,6 +10,7 @@ import { Category } from 'src/category/schemas/category.schema';
 import { ShopLayout } from 'src/shop-layout/schemas/shopping-layout.schema';
 import { UpdateProductHighlightDto } from './dto/update-product-highlight.dto';
 import { Pagination } from 'src/pagination/interface/pagination.interface';
+import { SendNotification } from './notification/product.notification';
 
 @Injectable()
 export class ProductService {
@@ -314,6 +315,14 @@ export class ProductService {
     const productToUpdate = await this.productModel.findById(productId);
     productToUpdate.highlight = updateProductHighlight.highlight;
     productToUpdate.weeklyProduct = updateProductHighlight.weeklyProduct;
+
+    //Send Push Notification
+    let notification = new SendNotification();
+    await notification.Notify(
+      '',
+      'Novo Produto em Destaque',
+      `Aceda à nossa aplicação para ver o nosso mais recente produto em destaque ${productToUpdate.name}`,
+    );
 
     return productToUpdate.save();
   }

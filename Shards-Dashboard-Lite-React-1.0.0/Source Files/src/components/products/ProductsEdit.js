@@ -19,7 +19,23 @@ const ProductsEdit = () => {
   const [shop, setShop] = useState();
   const [image, setImage] = useState();
 
+  const [loadCategory, setLoadCategory] = useState([]);
+  const [loadShop, setLoadShop] = useState([]);
+  const [innerLayouts, setInnerLayouts] = useState([]);
+
   useEffect(() => {
+    const getCategorys = async () => {
+      const res = await axios.get(`http://localhost:3000/api/v1/categories`);
+      setLoadCategory(res.data.object);
+    };
+    const getShops = async () => {
+      const res = await axios.get(`http://localhost:3000/api/v1/shop-layouts`);
+      setLoadShop(res.data.object);
+    };
+
+    getCategorys();
+    getShops();
+
     const parts = window.location.href.split("/");
     var getId = parts[parts.length - 1];
     setProductId(getId);
@@ -61,6 +77,14 @@ const ProductsEdit = () => {
     }
   };
 
+  const handleShopChange = event => {
+    const selectedShopId = event.target.value;
+    const selectedShop = loadShop.find(shop => shop._id === selectedShopId);
+
+    setShop(selectedShop._id);
+    setInnerLayouts(selectedShop.layout.innerLayout);
+  };
+
   return (
     <Container fluid className="main-content-container px-4">
       <Row noGutters className="page-header py-4">
@@ -81,7 +105,7 @@ const ProductsEdit = () => {
                   </div>
                   <div className="col-md-10">Input para receber image?</div>
                   <div className="col-md-2"></div>
-                  <div className="col-md-10">
+                  <div className="col-md-6">
                     <div className="form-group">
                       <label>Nome</label>
                       <input
@@ -92,18 +116,7 @@ const ProductsEdit = () => {
                       />
                     </div>
                   </div>
-                  <div className="col-md-12">
-                    <div className="form-group">
-                      <label>Descrição</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={description}
-                        onChange={e => setDescription(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
+                  <div className="col-md-2">
                     <div className="form-group">
                       <label>Preço</label>
                       <input
@@ -114,7 +127,7 @@ const ProductsEdit = () => {
                       />
                     </div>
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-md-2">
                     <div className="form-group">
                       <label>Quantidade</label>
                       <input
@@ -125,37 +138,69 @@ const ProductsEdit = () => {
                       />
                     </div>
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-md-12">
                     <div className="form-group">
-                      <label>Localização</label>
-                      <input
-                        type="text"
+                      <label>Descrição</label>
+                      <textarea
                         className="form-control"
-                        value={location}
-                        onChange={e => setLocation(e.target.value)}
-                      />
+                        rows={3}
+                        value={description}
+                        onChange={e => setDescription(e.target.value)}
+                      ></textarea>
                     </div>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-4">
                     <div className="form-group">
                       <label>Categoria</label>
-                      <input
-                        type="text"
+                      <select
                         className="form-control"
                         value={category}
-                        onChange={e => setCategory(e.target.value)}
-                      />
+                        onChange={e => {
+                          setCategory(e.target.value);
+                        }}
+                      >
+                        {loadCategory.map(option => (
+                          <option key={option._id} value={option.name}>
+                            {option.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                   <div className="col-md-6">
                     <div className="form-group">
                       <label>Loja</label>
-                      <input
-                        type="text"
+                      <select
                         className="form-control"
-                        value={shop}
-                        onChange={e => setShop(e.target.value)}
-                      />
+                        onChange={handleShopChange}
+                      >
+                        {loadShop.map(shop => (
+                          <option key={shop._id} value={shop._id}>
+                            {shop.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="col-md-2">
+                    <div className="form-group">
+                      <label>Localização</label>
+                      <select
+                        className="form-control"
+                        id="innerLayoutDropdown"
+                        onChange={e => setLocation(e.target.value)}
+                        disabled={!shop}
+                      >
+                        {innerLayouts.map(innerLayout => (
+                          <option
+                            key={innerLayout.identifier}
+                            value={innerLayout.identifier}
+                          >
+                            {innerLayout.identifier}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                   <p />

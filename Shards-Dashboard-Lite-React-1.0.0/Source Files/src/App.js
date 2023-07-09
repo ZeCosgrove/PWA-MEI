@@ -45,7 +45,9 @@ const App = () => {
       if (error.response.status === 403) {
         window.location.href = "/login";
       }
-      toast.error(error.response.data.message);
+      toast.error(
+        `Status ${error.response.data.statusCode} - ${error.response.data.message[0]}`
+      );
       return Promise.reject(error);
     }
   );

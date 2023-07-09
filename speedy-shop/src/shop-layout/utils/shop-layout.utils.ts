@@ -6,7 +6,6 @@ const getCityByCoordinates = async (lat, long) => {
   const res = await axios.get(
     `https://eu1.locationiq.com/v1/reverse?key=${key}&lat=${lat}&lon=${long}&format=json`,
   );
-  console.log(res.data);
   return `${res.data.address.city}, ${res.data.address.state}`;
 };
 

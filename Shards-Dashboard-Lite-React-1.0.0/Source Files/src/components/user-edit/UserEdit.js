@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Container,
-  Row,
-  Col,
-  Card,
-  CardHeader,
-  CardBody,
-  FormSelect
-} from "shards-react";
+import { Container, Row, Col, Card, CardHeader, CardBody } from "shards-react";
 
 import PageTitle from "../common/PageTitle";
 import axios from "axios";
@@ -17,33 +9,14 @@ import { toast } from "react-toastify";
 const UserEdit = () => {
   const [id, setUserId] = useState([]);
 
-  const [name, setName] = useState([]);
-  const [email, setEmail] = useState([]);
-  const [role, setRole] = useState([]);
-  const [mobile, setMobile] = useState([]);
-  const [nif, setNif] = useState([]);
-  const [address, setAddress] = useState([]);
-  const [city, setCity] = useState([]);
-  const [zip, setZip] = useState([]);
-
-  const UserRoles = [
-    {
-      id: 0,
-      name: "Cliente"
-    },
-    {
-      id: 1,
-      name: "Staff"
-    },
-    {
-      id: 2,
-      name: "Administrador"
-    }
-  ];
-
-  const rolesData = UserRoles.map(role => {
-    return <option key={role.id}>{role.name}</option>;
-  });
+  const [name, setName] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [role, setRole] = useState(null);
+  const [mobile, setMobile] = useState(null);
+  const [nif, setNif] = useState(null);
+  const [address, setAddress] = useState(null);
+  const [city, setCity] = useState(null);
+  const [zip, setZip] = useState(null);
 
   useEffect(() => {
     const parts = window.location.href.split("/");
@@ -72,13 +45,13 @@ const UserEdit = () => {
     const bodyParameters = {
       name: name,
       email: email,
-      // role: role,
-      mobile: +mobile,
-      nif: +nif,
+      role: +role,
+      ...(mobile !== null && { mobile: +mobile }),
+      ...(nif !== null && { nif: +nif }),
       address: {
-        address: address,
-        city: city,
-        zip: zip
+        ...(address !== null && { address }),
+        ...(city !== null && { city }),
+        ...(zip !== null && { zip })
       }
     };
 
@@ -91,7 +64,6 @@ const UserEdit = () => {
       toast.success(`Utilizador "${res.data.name}" editado com sucesso`);
     } catch (err) {
       console.log(err);
-      alert("Error");
     }
   };
 
@@ -132,10 +104,23 @@ const UserEdit = () => {
                       />
                     </div>
                   </div>
+
                   <div className="col-md-4">
                     <div className="form-group">
                       <label>Role</label>
-                      <FormSelect value={role}>{rolesData}</FormSelect>
+                      <div className="form-group">
+                        <select
+                          className="form-control"
+                          value={role}
+                          onChange={e => {
+                            setRole(e.target.value);
+                          }}
+                        >
+                          <option value={0}>Cliente</option>
+                          <option value={1}>Staff</option>
+                          <option value={2}>Admin</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
                   <div className="col-md-6">

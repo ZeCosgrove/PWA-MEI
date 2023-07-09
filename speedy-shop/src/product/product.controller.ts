@@ -175,7 +175,6 @@ export class ProductController {
   }
 
   @Patch('changeHighlight/:id')
-  @HttpCode(201)
   @UseGuards(AuthGuard)
   @Roles(UserRole.Admin)
   updateProductHighlight(
