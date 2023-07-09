@@ -176,16 +176,18 @@ export class ShoppingCartService {
         quantity : quantity,
         discount : discount
       }
-      console.log("added")
       shoppingCart.products.push(cartProduct as CartProduct)
     }else{
-      console.log("update")
-      var cartProduct = shoppingCart.products.find(p => p.product._id == productId)
-      const index = shoppingCart.products.indexOf(cartProduct)
-      cartProduct.quantity = quantity
-      cartProduct.discount = discount
-
-      shoppingCart.products[index] = cartProduct
+      var cartProduct = shoppingCart.products.find(p => p.product._id == productId);
+      const index = shoppingCart.products.indexOf(cartProduct);
+      if (quantity == 0) {
+        shoppingCart.products.splice(index, 1);
+      }else{
+        cartProduct.quantity = quantity
+        cartProduct.discount = discount
+  
+        shoppingCart.products[index] = cartProduct
+      }
     }
     
     

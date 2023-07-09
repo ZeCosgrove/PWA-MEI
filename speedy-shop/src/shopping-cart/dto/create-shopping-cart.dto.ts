@@ -13,11 +13,11 @@ export class CreateShoppingCartDto {
 
   @ApiProperty()
   @IsString()
-  startDate: Date;
+  startDate: string;
 
   @ApiProperty()
   @IsString()
-  endDate?: Date;
+  endDate?: string;
 
   @ApiProperty()
   @IsEnum(ShoppingCartSystemState)
