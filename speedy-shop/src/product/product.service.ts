@@ -11,6 +11,7 @@ import { ShopLayout } from 'src/shop-layout/schemas/shopping-layout.schema';
 import { UpdateProductHighlightDto } from './dto/update-product-highlight.dto';
 import { Pagination } from 'src/pagination/interface/pagination.interface';
 import { SendNotification } from './notification/product.notification';
+import { User } from 'src/user/schemas/user.schema';
 
 @Injectable()
 export class ProductService {
@@ -21,6 +22,7 @@ export class ProductService {
     @InjectModel(Product.name) private productModel: Model<Product>,
     @InjectModel(Category.name) private categoryModel: Model<Category>,
     @InjectModel(ShopLayout.name) private shopModel: Model<ShopLayout>,
+    @InjectModel(User.name) private userModel: Model<User>,
   ) {}
 
   //#region Create Product
@@ -317,12 +319,16 @@ export class ProductService {
     productToUpdate.weeklyProduct = updateProductHighlight.weeklyProduct;
 
     //Send Push Notification
-    let notification = new SendNotification();
-    await notification.Notify(
-      '',
-      'Novo Produto em Destaque',
-      `Aceda à nossa aplicação para ver o nosso mais recente produto em destaque ${productToUpdate.name}`,
-    );
+    if (productToUpdate.highlight == true) {
+      let notification = new SendNotification();
+      const users = await this.userModel.find().exec();
+
+      await notification.Notify(
+        'Novo Produto em Destaque',
+        `Aceda à nossa aplicação para ver o nosso mais recente produto em destaque ${productToUpdate.name}`,
+        users,
+      );
+    }
 
     return productToUpdate.save();
   }

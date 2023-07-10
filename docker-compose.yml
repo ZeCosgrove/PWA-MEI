@@ -3,13 +3,20 @@ services:
   backend:
     build:
       context: ./speedy-shop
-      dockerfile: Dockerfile   # Path to the Dockerfile for the NestJS app
+      dockerfile: Dockerfile
     ports:
-      - '3000:3000'            # Map host port 3000 to container port 3000
+      - '3000:3000'
+    networks:
+      - app-network
 
   frontend:
     build:
-      context: ./Shards-Dashboard-Lite-React-1.0.0/Source Files    # Path to the directory containing the React app
-      dockerfile: Dockerfile   # Path to the Dockerfile for the React app
+      context: ./Shards-Dashboard-Lite-React-1.0.0/Source Files
+      dockerfile: Dockerfile
     ports:
-      - '3001:3001'            # Map host port 3001 to container port 3001
+      - '3001:3001'
+    networks:
+      - app-network
+
+networks:
+  app-network:

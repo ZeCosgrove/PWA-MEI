@@ -1,5 +1,6 @@
 import { IsArray, IsDate, IsEnum, IsNumber, IsString } from 'class-validator';
 import { ShoppingCartSystemState } from '../enums/shopping-cart-system-state.enum';
+import { CartProduct } from 'src/cart-product/schemas/cart-product.schema';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateShoppingCartDto {
@@ -9,7 +10,7 @@ export class CreateShoppingCartDto {
 
   @ApiProperty()
   @IsArray()
-  products?: Array<String>;
+  products?: Array<CartProduct>;
 
   @ApiProperty()
   @IsString()

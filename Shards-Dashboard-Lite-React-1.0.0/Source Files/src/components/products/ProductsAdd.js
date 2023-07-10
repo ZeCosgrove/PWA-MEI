@@ -172,7 +172,7 @@ const ProductsAdd = () => {
                         onChange={e => setLocation(e.target.value)}
                         disabled={!shop}
                       >
-                        <option value="">Select uma localização</option>
+                        <option value="">Selecione uma localização</option>
                         {innerLayouts.map(innerLayout => (
                           <option
                             key={innerLayout.identifier}

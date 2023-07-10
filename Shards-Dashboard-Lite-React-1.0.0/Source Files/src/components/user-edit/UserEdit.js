@@ -145,37 +145,33 @@ const UserEdit = () => {
                       />
                     </div>
                   </div>
-                  {address !== "" && (
-                    <>
-                      <div className="col-md-12">
-                        <label>Morada</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={address}
-                          onChange={e => setAddress(e.target.value)}
-                        />
-                      </div>
-                      <div className="col-md-6">
-                        <label>Cidade</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={city}
-                          onChange={e => setCity(e.target.value)}
-                        />
-                      </div>
-                      <div className="col-md-6">
-                        <label>Código-Postal</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={zip}
-                          onChange={e => setZip(e.target.value)}
-                        />
-                      </div>
-                    </>
-                  )}
+                  <div className="col-md-12">
+                    <label>Morada</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={address}
+                      onChange={e => setAddress(e.target.value)}
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label>Cidade</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={city}
+                      onChange={e => setCity(e.target.value)}
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label>Código-Postal</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={zip}
+                      onChange={e => setZip(e.target.value)}
+                    />
+                  </div>
                   <p />
                   <div className="col-md-12">
                     <button

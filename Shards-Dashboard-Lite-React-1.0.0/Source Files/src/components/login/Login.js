@@ -4,19 +4,12 @@ import { useSignIn } from "react-auth-kit";
 import axios from "axios";
 import "./Login.css";
 
-import { toast } from "react-toastify";
-
 const Login = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
   const signIn = useSignIn();
   const navigate = useNavigate();
-
-  // const bodyParameters = {
-  //   email: "Test@test.pt",
-  //   password: "Test"
-  // };
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -45,7 +38,7 @@ const Login = () => {
 
       navigate("/users");
     } catch (error) {
-      toast.error(error.response.data.message);
+      console.log(error);
     }
   };
 
