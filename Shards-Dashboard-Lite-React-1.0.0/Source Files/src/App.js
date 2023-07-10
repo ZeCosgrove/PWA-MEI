@@ -42,12 +42,19 @@ const App = () => {
       return response;
     },
     function(error) {
-      if (error.response.status === 403) {
+      if (error.response.message === "Unauthorized Access! - Invalid token") {
         window.location.href = "/login";
       }
-      toast.error(
-        `Status ${error.response.data.statusCode} - ${error.response.data.message[0]}`
-      );
+
+      if (Array.isArray(error.response.data.message)) {
+        toast.error(
+          `Status ${error.response.data.statusCode} - ${error.response.data.message[0]}`
+        );
+      } else {
+        toast.error(
+          `Status ${error.response.data.statusCode} - ${error.response.data.message}`
+        );
+      }
       return Promise.reject(error);
     }
   );
@@ -56,15 +63,7 @@ const App = () => {
     <AuthProvider authType={"localstorage"} authName={"_auth"}>
       <Router>
         <Routes>
-          <Route
-            exact
-            path="/"
-            element={
-              <MainLayout>
-                <Users /> {/* Replace with Dashboard */}
-              </MainLayout>
-            }
-          />
+          <Route exact path="/" element={<Login />} />
           <Route exact path="/login" element={<Login />} />
           <Route
             exact

@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { Address } from 'src/address/entities/address.entity';
+import { Address } from '../../address/entities/address.entity';
 import { UserSystemState } from '../enums/user-system-state.enum';
 import { UserRole } from '../enums/user-role.enum';
 import { ApiProperty } from '@nestjs/swagger';
@@ -14,6 +14,10 @@ export class User extends Document {
   @ApiProperty()
   @Prop()
   email: string;
+
+  @ApiProperty()
+  @Prop()
+  androidToken: string;
 
   @ApiProperty()
   @Prop()

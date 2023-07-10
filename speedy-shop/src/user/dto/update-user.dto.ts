@@ -1,6 +1,7 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateUserDto } from './create-user.dto';
 import {
+  IsEmail,
   IsEnum,
   IsNumber,
   IsObject,
@@ -17,7 +18,7 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   name: string;
 
   @ApiProperty()
-  @IsString()
+  @IsEmail()
   email: string;
 
   @ApiProperty()

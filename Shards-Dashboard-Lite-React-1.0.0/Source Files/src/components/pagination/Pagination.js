@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 const Pagination = ({ onCounterChange, pagination }) => {
   const nextPage = () => {
@@ -47,6 +48,11 @@ const Pagination = ({ onCounterChange, pagination }) => {
       </ul>
     </nav>
   );
+};
+
+Pagination.propTypes = {
+  onCounterChange: PropTypes.number,
+  pagination: PropTypes.object
 };
 
 export default Pagination;

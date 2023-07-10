@@ -50,11 +50,6 @@ const Canvas = props => {
 
   useEffect(() => {
     if (props.layout != undefined) {
-      let innerLayout = {
-        upperLeft: [0, 0],
-        bottonRigh: [100, 100]
-      };
-
       const canvas = canvasRef.current;
 
       const originalHeight = canvas.height;
@@ -86,7 +81,6 @@ const Canvas = props => {
         context.canvas.height
       );
 
-      // outer(context, props.innerLayout);
       drawBorders(context, props.layout, thisScale);
 
       if (props.layout.innerLayout !== undefined) {
@@ -98,7 +92,7 @@ const Canvas = props => {
   }, [drawBorders]);
 
   function getObjectFitSize(
-    contains /* true = contain, false = cover */,
+    contains,
     containerWidth,
     containerHeight,
     width,
@@ -129,9 +123,8 @@ const Canvas = props => {
   return <canvas ref={canvasRef} {...props} />;
 };
 
-// Canvas.propTypes = {
-//   layour: PropTypes.object,
-//   innerLayout: PropTypes.array
-// };
+Canvas.propTypes = {
+  props: PropTypes.object
+};
 
 export default Canvas;

@@ -27,17 +27,7 @@ export class UserService {
     private jwtService: JwtService,
   ) {}
 
-  async getUsers(page: string, perPage: string) {
-    const filter = {
-      systemState: {
-        $in: [
-          UserSystemState.Created,
-          UserSystemState.Active,
-          UserSystemState.Inactive,
-        ],
-      },
-    };
-
+  async getUsers(page?: string, perPage?: string) {
     let users: User[] = [];
 
     if (page != undefined && perPage != undefined && +perPage > 0) {
@@ -201,6 +191,11 @@ export class UserService {
     const user = await this.userModel
       .findOne({ email: input.email, password: input.password })
       .exec();
+
+    if (input.androidToken != null) {
+      user.androidToken = input.androidToken;
+      await this.userModel.updateOne({ _id: user._id }, user).exec();
+    }
 
     if (user !== null) {
       const payload = { sub: user._id, username: user.name, role: user.role };
