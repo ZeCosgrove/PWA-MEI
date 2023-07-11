@@ -85,11 +85,12 @@ const Products = () => {
 
   const handleDelete = async e => {
     try {
-      await axios.delete(
-        `http://localhost:3000/api/v1/categories/${e.target.id}`
+      await axios.patch(
+        `http://localhost:3000/api/v1/products/changeSystemState/${e.target.id}`,
+        { systemState: 2 }
       );
 
-      toast.success("Categoria eliminada com sucesso");
+      toast.success("Produto eliminada com sucesso");
       isToRefresh(refresh + 1);
     } catch (err) {
       console.log(err);
@@ -131,9 +132,9 @@ const Products = () => {
   };
 
   const DisplayData = products.map(info => {
+    console.log(info);
     return (
       <tr key={info._id}>
-        {/* <td>{info._id}</td> */}
         <td className="d-flex justify-content-center" height={80}>
           {info.image && info.image.data && (
             <ImageDisplayer imageData={info.image.data} height={55} />
@@ -152,7 +153,6 @@ const Products = () => {
               checked={info.highlight}
               value={info.highlight}
               id={info._id}
-              // onChange={handleChangeHighlight}
               onChange={() => handleChangeChecked(info._id)}
             />
           </div>
@@ -162,6 +162,7 @@ const Products = () => {
             className="mb-2 mr-1 btn-secondary"
             id={info._id}
             onClick={handleEdit}
+            disabled={info.systemState === 2}
           >
             Editar
           </Button>
@@ -171,6 +172,7 @@ const Products = () => {
             className="mb-2 mr-1 btn-primary"
             id={info._id}
             onClick={handleDelete}
+            disabled={info.systemState === 2}
           >
             Eliminar
           </Button>
