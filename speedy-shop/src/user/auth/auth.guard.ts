@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+require('dotenv').config();
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -15,21 +16,16 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
-      throw new ForbiddenException("Unauthorized Access - Token not sent!");
+      throw new ForbiddenException('Unauthorized Access - Token not sent!');
     }
     try {
-      const payload = await this.jwtService.verifyAsync(
-        token,
-        {
-          secret: "asasd",//process.env.SECRET
-        }
-      );
-      // 💡 We're assigning the payload to the request object here
-      // so that we can access it in our route handlers
-      request['user'] = payload;
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: process.env.SECRET,
+      });
 
+      request['user'] = payload;
     } catch {
-      throw new ForbiddenException("Unauthorized Access! - Invalid token");
+      throw new ForbiddenException('Unauthorized Access! - Invalid token');
     }
 
     return true;

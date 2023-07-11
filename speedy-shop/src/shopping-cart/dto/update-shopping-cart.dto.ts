@@ -8,11 +8,11 @@ import { ApiProperty } from '@nestjs/swagger';
 export class UpdateShoppingCartDto extends PartialType(CreateShoppingCartDto) {
   @ApiProperty()
   @IsString()
-  user: String;
+  user: string;
 
   @ApiProperty()
   @IsArray()
-  products?: Array<CartProduct>
+  products?: Array<CartProduct>;
 
   @ApiProperty()
   @IsString()
