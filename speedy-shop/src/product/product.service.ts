@@ -249,8 +249,6 @@ export class ProductService {
       return null;
     }
 
-    console.log(categoryFinded._id);
-
     // check if the shop exists
     const shopFinded = await this.shopModel
       .findOne({ name: updateProductDto.shop })
@@ -304,6 +302,7 @@ export class ProductService {
     id: string,
     updateProductSystemStateDto: UpdateProductSystemStateDto,
   ) {
+    console.log(updateProductSystemStateDto);
     const productToUpdate = await this.productModel.findById(id);
     productToUpdate.systemState = updateProductSystemStateDto.systemState;
 
