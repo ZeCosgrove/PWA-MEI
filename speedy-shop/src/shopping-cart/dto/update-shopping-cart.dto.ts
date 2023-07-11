@@ -12,7 +12,7 @@ export class UpdateShoppingCartDto extends PartialType(CreateShoppingCartDto) {
 
   @ApiProperty()
   @IsArray()
-  products?: Array<string>
+  products?: Array<CartProduct>;
 
   @ApiProperty()
   @IsString()

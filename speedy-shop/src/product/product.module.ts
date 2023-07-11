@@ -12,6 +12,7 @@ import {
 import { User, UserSchema } from 'src/user/schemas/user.schema';
 
 import { JwtModule } from '@nestjs/jwt';
+require('dotenv').config();
 
 @Module({
   controllers: [ProductController],
@@ -25,7 +26,7 @@ import { JwtModule } from '@nestjs/jwt';
     ]),
     JwtModule.register({
       global: true,
-      secret: 'asasd', //process.env.SECRET,
+      secret: process.env.SECRET,
       signOptions: { expiresIn: '3600s' },
     }),
   ],
